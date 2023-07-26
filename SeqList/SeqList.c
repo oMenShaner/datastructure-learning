@@ -25,6 +25,7 @@ static int SeqListCheckCapacity(SeqList* ps)
 //顺序表初始化
 void SeqListInit(SeqList* ps)
 {
+	assert(ps);
 	ps->a = (SLDataType*)malloc(4*sizeof(SLDataType));
 	if (ps->a == NULL)
 	{
@@ -39,6 +40,7 @@ void SeqListInit(SeqList* ps)
 //顺序表销毁
 void SeqListDestroy(SeqList* ps)
 {
+	assert(ps);
 	free(ps->a);		//将空间还给操作系统
 	ps->a = NULL;		//置空防止野指针
 	ps->size = 0;		//空间置零
@@ -48,6 +50,7 @@ void SeqListDestroy(SeqList* ps)
 //顺序表打印
 void SeqListPrint(const SeqList* ps)
 {
+	assert(ps);
 	int i = 0;
 	for (i = 0; i < ps->size; i++)
 	{
@@ -59,6 +62,7 @@ void SeqListPrint(const SeqList* ps)
 //顺序表尾插
 void SeqListPushBack(SeqList* ps, SLDataType x)
 {
+	assert(ps);
 	//若容量不够且扩容失败, 直接结束程序
 	if (SeqListCheckCapacity(ps) == 0)
 	{
@@ -72,6 +76,7 @@ void SeqListPushBack(SeqList* ps, SLDataType x)
 //顺序表尾删
 void SeqListPopBack(SeqList* ps)
 {
+	assert(ps);
 	//确保顺序表有数据可删
 	assert(ps->size > 0);
 
@@ -81,7 +86,8 @@ void SeqListPopBack(SeqList* ps)
 
 //顺序表头插
 void SeqListPushFront(SeqList* ps, SLDataType x)
-{	
+{
+	assert(ps);	
 	//若容量不够且扩容失败, 直接结束程序
 	if (SeqListCheckCapacity(ps) == 0)
 	{
@@ -104,6 +110,7 @@ void SeqListPushFront(SeqList* ps, SLDataType x)
 //顺序表头删
 void SeqListPopFront(SeqList* ps)
 {
+	assert(ps);
 	//确保顺序表有数据可删
 	assert(ps->size > 0);
 	
@@ -120,7 +127,8 @@ void SeqListPopFront(SeqList* ps)
 		
 //顺序表查找
 int SeqListFind(const SeqList* ps, SLDataType x)
-{
+{	
+	assert(ps);
 	int i = 0;
 	for (i = 0; i < ps->size; i++)
 	{
@@ -136,6 +144,7 @@ int SeqListFind(const SeqList* ps, SLDataType x)
 //在pos位置插入x
 void SeqListInsert(SeqList* ps, int pos, SLDataType x)
 {
+	assert(ps);
 	//确保插入在合法位置
 	assert(pos >= 0 && pos <= ps->size);
 
@@ -161,6 +170,7 @@ void SeqListInsert(SeqList* ps, int pos, SLDataType x)
 //删除pos位置上的值
 void SeqListErase(SeqList* ps, int pos)
 {
+	assert(ps);
 	//确保pos值合法
 	assert(pos >= 0 && pos < ps->size);
 	//确保有空间可删
