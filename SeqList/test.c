@@ -5,22 +5,19 @@ void SeqListTest1()
 	SeqList sl;
 	SeqListInit(&sl);
 	
-	SeqListPrint(&sl);
 	SeqListPushBack(&sl, 1);
 	SeqListPushBack(&sl, 2);
 	SeqListPushBack(&sl, 3);
 	SeqListPushBack(&sl, 4);
 	SeqListPushBack(&sl, 5);
-	SeqListPopBack(&sl);	
-	SeqListPopBack(&sl);	
-	SeqListPopBack(&sl);	
-	SeqListPopBack(&sl);	
-	SeqListPopBack(&sl);	
+	SeqListPrint(&sl);
+
+	SeqListPopBack(&sl);
+	SeqListPrint(&sl);
 	SeqListPopBack(&sl);	
 	SeqListPopBack(&sl);	
 	SeqListPrint(&sl);
-	
-	SeqListDestroy(&sl);
+	SeqListDestroy(&sl);	
 }
 
 void SeqListTest2()
@@ -28,20 +25,19 @@ void SeqListTest2()
 	SeqList sl;
 	SeqListInit(&sl);
 
-	SeqListPushFront(&sl, 1);
-	SeqListPushFront(&sl, 2);
-	SeqListPushFront(&sl, 3);
-	SeqListPushFront(&sl, 4);
-	SeqListPushFront(&sl, 5);
+	SeqListPushFront(&sl, -1);
+	SeqListPushFront(&sl, -2);
+	SeqListPushFront(&sl, -3);
+	SeqListPushFront(&sl, -4);
+	SeqListPushFront(&sl, -5);
+	SeqListPrint(&sl);
+	
+	SeqListPopFront(&sl);
 	SeqListPopFront(&sl);
 	SeqListPrint(&sl);
 	SeqListPopFront(&sl);
-	SeqListPrint(&sl);
 	SeqListPopFront(&sl);
 	SeqListPrint(&sl);
-	SeqListPopFront(&sl);
-	SeqListPrint(&sl);
-
 	SeqListDestroy(&sl);
 }
 
@@ -71,17 +67,16 @@ void SeqListTest3()
 	printf("%d\n", pos);
 		
 	pos = 2;
-	SeqListPrint(&sl);
 	SeqListInsert(&sl, pos, 100);
 	SeqListPrint(&sl);
 
 	pos = 10;
-	SeqListPrint(&sl);
 	SeqListInsert(&sl, pos, 100);
 	SeqListPrint(&sl);
 
 	pos = sl.size + 1;
 	SeqListInsert(&sl, pos, 100);
+	SeqListPrint(&sl);
 	SeqListDestroy(&sl);
 }
 
