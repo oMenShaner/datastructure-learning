@@ -35,6 +35,8 @@ void SListPrint(SListNode* pHead)
 // 单链表尾插
 void SListPushBack(SListNode** ppHead, SLTDataType x)
 {
+	assert(ppHead);
+
     SListNode* newNode = BuySListNode(x);   //创建一个新结点
 
     if(*ppHead == NULL)    //没有结点, 直接将新结点的地址赋值
@@ -65,6 +67,7 @@ void SListPushFront(SListNode** ppHead, SLTDataType x)
 // 单链表的尾删
 void SListPopBack(SListNode** ppHead)
 {
+	assert(ppHead);
     assert(*ppHead);    //没有结点的情况
 
     if ((*ppHead)->next == NULL)  //只有一个结点的情况
@@ -88,7 +91,8 @@ void SListPopBack(SListNode** ppHead)
 
 // 单链表头删
 void SListPopFront(SListNode** ppHead)
-{
+{	
+	assert(ppHead);
     assert(*ppHead);    //链表为空
 
     //链表非空
@@ -117,7 +121,8 @@ SListNode* SListFind(SListNode* pHead, SLTDataType x)
 // 指定位置前插
 void SListInsert(SListNode** ppHead, SListNode* pos, SLTDataType x)
 {
-	assert(*ppHead);	//链表为空
+	assert(ppHead);
+	assert(pos);
 	
 	SListNode* newNode = BuySListNode(x);	//创建新结点
 	
@@ -144,8 +149,9 @@ void SListInsert(SListNode** ppHead, SListNode* pos, SLTDataType x)
 
 // 单链表在 pos 位置上删除
 void SListErase(SListNode** ppHead, SListNode* pos)
-{
-	assert(*ppHead);		//链表为空
+{	
+	assert(ppHead);
+	assert(pos);
 
 	if (*ppHead == pos)	//如果 pos 指向第一个结点
 	{				
@@ -170,7 +176,7 @@ void SListErase(SListNode** ppHead, SListNode* pos)
 // 单链表销毁
 void SListDestroy(SListNode** ppHead)
 {
-	assert(*ppHead);
+	assert(ppHead);
 	
 	SListNode* cur = *ppHead;
 	
@@ -203,5 +209,4 @@ void SListEraseAfter(SListNode* pos)
 	SListNode* deleteNode = pos->next;
 	pos->next = deleteNode->next;
 	free(deleteNode);
-
 }	
