@@ -205,42 +205,42 @@ void SListTest7()
 	SListPrint(pList);
 	
 	SListNode* pos;
-//	pos = SListFind(pList, 1);
-//	if (pos != NULL)
-//	{
-//		SListInsertAfter(pos, -1);
-//	}
-//	SListPrint(pList);	
-//	
-//	pos = SListFind(pList, 6);
-//	if (pos != NULL)
-//	{
-// 		SListInsertAfter(pos, -6);
-//	}
-//	SListPrint(pList);
-//
-//	pos = SListFind(pList, 10);
-//	if (pos != NULL)
-//	{
-//		SListInsertAfter(pos, -10);
-//	}
-//	SListPrint(pList);
-	
 	pos = SListFind(pList, 1);
 	if (pos != NULL)
 	{
-		SListEraseAfter(pos);
+		SListInsertAfter(pos, -1);
+	}
+	SListPrint(pList);	
+	
+	pos = SListFind(pList, 6);
+	if (pos != NULL)
+	{
+ 		SListInsertAfter(pos, -6);
 	}
 	SListPrint(pList);
 
-	pos = SListFind(pList, 4);
+	pos = SListFind(pList, 10);
+	if (pos != NULL)
+	{
+		SListInsertAfter(pos, -10);
+	}
+	SListPrint(pList);
+	
+	pos = SListFind(pList, -1);
 	if (pos != NULL)
 	{
 		SListEraseAfter(pos);
 	}
 	SListPrint(pList);
 
-	pos = SListFind(pList, 6);
+	pos = SListFind(pList, 5);
+	if (pos != NULL)
+	{
+		SListEraseAfter(pos);
+	}
+	SListPrint(pList);
+
+	pos = SListFind(pList, -6);
 	if (pos != NULL)
 	{
 		SListEraseAfter(pos);
