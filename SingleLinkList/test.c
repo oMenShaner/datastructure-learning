@@ -253,11 +253,11 @@ int main(void)
 {
 	//SListTest1();
 	//SListTest2();
-	//SListTest3();
+	SListTest3();
 	//SListTest4();
 	//SListTest5();
 	//SListTest6();
-	SListTest7();
+	//SListTest7();
 
 
 	return 0;
