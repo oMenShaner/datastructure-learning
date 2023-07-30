@@ -26,8 +26,12 @@ void SListPopBack(SListNode** pHead);
 void SListPopFront(SListNode** pHead);
 //单链表查找
 SListNode* SListFind(SListNode* pHead, SLTDataType x);
+//单链表在 pos 位置之前插入
+void SListInsert(SListNode** ppHead, SListNode* pos, SLTDataType x);
+//单链表在 pos 位置上删除
+void SListErase(SListNode** ppHead, SListNode* pos);
 //单链表在 pos 位置之后插入
-void SListInsertAfter(SListNode* pos, SListNode x);
+void SListInsertAfter(SListNode* pos, SLTDataType x);
 //单链表在 pos 位置之后删除
 void SListEraseAfter(SListNode* pos);
 //单链表的销毁

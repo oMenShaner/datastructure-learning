@@ -114,20 +114,93 @@ SListNode* SListFind(SListNode* pHead, SLTDataType x)
     return NULL;
 }
 
+// 指定位置前插
+void SListInsert(SListNode** ppHead, SListNode* pos, SLTDataType x)
+{
+	assert(*ppHead);	//链表为空
+	
+	SListNode* newNode = BuySListNode(x);	//创建新结点
+	
+	if (*ppHead == pos)	//如果pos指向第一个结点
+	{
+		//头插
+		newNode->next = *ppHead;
+		*ppHead = newNode;
+	}
+	else
+	{
+		SListNode* prev = *ppHead;	//prev用于访问到pos前一个结点的位置
+		
+		while (prev->next != pos)
+		{
+			prev = prev->next;
+		}
+		
+		//插入
+		newNode->next = pos;
+		prev->next = newNode;
+	}
+}
+
+// 单链表在 pos 位置上删除
+void SListErase(SListNode** ppHead, SListNode* pos)
+{
+	assert(*ppHead);		//链表为空
+
+	if (*ppHead == pos)	//如果 pos 指向第一个结点
+	{				
+		*ppHead = pos->next;
+		free(pos);		//释放空间
+	}
+	else	//有两个及以上结点
+	{
+		SListNode* prev = *ppHead;	//prev 访问到pos之前的一个结点
+		
+		while (prev->next != pos)
+		{	
+			prev = prev->next;
+		}
+		
+		//删除
+		prev->next = pos->next;
+		free(pos);
+	}
+}
+
 // 单链表销毁
 void SListDestroy(SListNode** ppHead)
 {
 	assert(*ppHead);
 	
 	SListNode* cur = *ppHead;
-	SListNode* deleteNode = cur;
 	
-	while (cur->next != NULL)
+	while (cur != NULL)
 	{
-		deleteNode = cur;
-		free(deleteNode);
-		cur = cur->next;
+		SListNode* next = cur->next;
+		free(cur);
+		cur = next;
 	}
 	
 	*ppHead = NULL;
+}
+
+// 单链表在 pos 位置后插入
+void SListInsertAfter(SListNode* pos, SLTDataType x)
+{
+	assert(pos);	//确保插入位置合法
+	
+	SListNode* newNode = BuySListNode(x);
+	newNode->next = pos->next;
+	pos->next = newNode;
+}		 
+
+// 单链表在 pos 位置之后删除
+void SListEraseAfter(SListNode* pos)
+{
+	assert(pos);	//确保删除位置合法
+	assert(pos->next);
+	
+	SListNode* deleteNode = pos->next;
+	pos->next = deleteNode->next;
+	free(deleteNode);
 }	
