@@ -36,3 +36,4 @@ void SListInsertAfter(SListNode* pos, SLTDataType x);
 void SListEraseAfter(SListNode* pos);
 //单链表的销毁
 void SListDestroy(SListNode** ppHead);
+

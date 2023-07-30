@@ -203,4 +203,5 @@ void SListEraseAfter(SListNode* pos)
 	SListNode* deleteNode = pos->next;
 	pos->next = deleteNode->next;
 	free(deleteNode);
+
 }	
