@@ -1,5 +1,6 @@
 #include "SList.h"
 
+
 // 动态申请一个结点
 SListNode* BuySListNode(SLTDataType x)
 {
