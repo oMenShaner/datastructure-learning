@@ -1060,6 +1060,77 @@ bool hasCycle(struct ListNode *head)
 }
 ```
 
+# 142. 环形链表 II
+
+- **题目**
+> 给定一个链表的头节点  `head` ，返回链表开始入环的第一个节点。 如果链表无环，则返回 `null`。 [OJ链接](https://leetcode.cn/problems/linked-list-cycle-ii/description/)
+- **要求**
+> 如果链表中有某个节点，可以通过连续跟踪 `next` 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 `pos` 来表示链表尾连接到链表中的位置（索引从 `0` 开始）。如果 `pos` 是 -1，则在该链表中没有环。注意：`pos` 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+
+> 不允许修改 链表。
+- **思路**
+<font color='red'>快慢指针</font>
+
+> 1. 通过快慢指针找到相遇点
+> 2. 两个指针同时从相遇点出发, 速度一致, 相遇点为入环第一个结点
+
+![1691073558010](image/LC刷题/1691073558010.png)
+
+- **实例**
+> 输入：head = [3,2,0,-4], pos = 1
+输出：返回索引为 1 的链表节点
+解释：链表中有一个环，其尾部连接到第二个节点。
+
+![1691073999016](image/LC刷题/1691073999016.gif)
+
+- **代码实现**
+```c
+struct ListNode *detectCycle(struct ListNode *head) 
+{
+    struct ListNode* slow, *fast;
+    struct ListNode* meet;
+
+    slow = fast = head;
+
+    //通过快慢指针, 判断是否有环, 并且找到相遇结点
+    while (fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast)
+        {
+            meet = slow;
+            break;
+        }
+    }
+
+    //如果fast 或者 fast->next 是NULL, 说明没有环
+    if (!fast || !fast->next)
+        return NULL;
+
+    // 两相同速度的指针, 分别从头结点 和 相遇结点出发, 第一次相遇点为 入口结点
+    slow = head;
+    fast = meet;
+    while (slow != fast)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    return fast;
+}
+```
+
+*** 
+其实还有一个稍微复杂一点的思路, 找到相遇结点后, 直接 
+```c
+newHead = slow->next;
+slow->next = NULL;
+```
+又回到求两链表交点的问题, 两链表的头结点分别为`head` 和 `newHead` 
+
+![1691074752722](image/LC刷题/1691074752722.png)
 
 - **题目**
 > 
