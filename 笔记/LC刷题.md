@@ -1132,18 +1132,88 @@ slow->next = NULL;
 
 ![1691074752722](image/LC刷题/1691074752722.png)
 
-- **题目**
-> 
-- **要求**
-> 
-- **思路**
-<font color='red'>快慢指针</font>
-> 
+# LeetCode138. 复制带随机指针的链表
 
+- **题目**
+> 给你一个长度为 n 的链表，每个节点包含一个额外增加的随机指针 random ，该指针可以指向链表中的任何节点或空节点。
+
+> 构造这个链表的 深拷贝。 深拷贝应该正好由 n 个 全新 节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的 next 指针和 random 指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。复制链表中的指针都不应指向原链表中的节点 。[OJ链接](https://leetcode.cn/problems/copy-list-with-random-pointer/description/)
+- **要求**
+> 时间复杂度 $O(N)$, 空间复杂度 $O(1)$
+- **思路**
+
+> 1. 先将每个结点的复制链接到该节点的 `next`
+> 2. 接着将复制结点的 `random` 指向 它前一个结点的 `random` 的 `next`
+> 3. 最后将复制结点尾插入新链表, 恢复原链表链接关系
 
 - **实例**
-> 
+> ![1691134407683](image/LC刷题/1691134407683.png)
+
+![1691134421290](image/LC刷题/1691134421290.gif)
 - **代码实现**
 ```c
+struct Node* copyRandomList(struct Node* head) 
+{
+	//1. 先将每个结点的复制链接到该节点的 `next`
+    struct Node* cur = head;
+    
+    while (cur != NULL)
+    {
+        struct Node* curNext = cur->next;
+        //拷贝结点
+        struct Node* copy = (struct Node*)malloc(sizeof(struct Node));
+        copy->val = cur->val;
 
+        //链接结点
+        cur->next = copy;
+        copy->next = curNext;
+
+        cur = curNext;
+    }
+
+    //2. 接着将复制结点的 `random` 指向 它前一个结点的 `random` 的 `next`
+    cur = head;
+
+    while (cur != NULL)
+    {
+        struct Node* copy = cur->next;
+
+        //修改复制结点的 random
+        if (cur->random == NULL)
+        {
+            copy->random = NULL;
+        }
+        else
+        {
+            copy->random = cur->random->next;
+        }
+
+        cur = cur->next->next;
+    }
+
+    //3. 最后将复制结点尾插入新链表, 恢复原链表链接关系
+    struct Node* newHead = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* tail = newHead;
+    
+    //尾插并恢复原链表链接
+    cur = head;
+
+    while (cur != NULL)
+    {
+        struct Node* copy = cur->next;
+        struct Node* curNext = copy->next;
+
+        //尾插
+        tail->next = copy;
+        tail = tail->next;
+
+        //恢复原链表链接
+        cur->next = curNext;
+        cur = curNext;
+    }
+
+    tail->next = NULL;
+
+    return newHead->next;
+}
 ```
