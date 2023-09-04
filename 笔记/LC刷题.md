@@ -1217,3 +1217,70 @@ struct Node* copyRandomList(struct Node* head)
     return newHead->next;
 }
 ```
+
+# LeetCode20. 有效的括号
+**题目**
+> 给定一个只包括 `'('`，`')'`，`'{'`，`'}'`，`'['`，`']'` 的字符串 s ，判断字符串是否有效。
+
+**要求**
+>有效字符串需满足：
+
+> 左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+每个右括号都有一个对应的相同类型的左括号。
+ 
+**思路**
+<font color='red'>用栈实现</font>
+
+> 1. 如果是左括号, 直接将左括号入栈
+> 2. 如果是右括号, 如果此时栈为空, 返回 `false`; 将栈顶元素弹出栈, 如果栈顶元素不是对应的左括号, 返回 `false`; 如果栈顶元素是对应左括号, 出栈
+> 3. 遍历完字符串, 判断此时栈是否为空. 为空返回 `true`; 不为空返回 `false`
+
+**代码实现**
+```c
+#define N 10000
+bool isValid(char * s)
+{
+    char stack[N] = {0,};   //创建栈数组
+    int top = 0;            //top指向栈顶元素的后一个空间
+    char topVal = 0;        //用来存放栈顶元素
+
+    while (*s)
+    {
+        //如果是左括号
+        if (*s == '{' || *s == '(' || *s == '[')
+        {
+            //入栈
+            stack[top] = *s;
+            top++;
+        }
+        //如果是右括号
+        else
+        {
+            //如果此时栈为空, 直接返回false
+            if (top == 0)
+            {
+                return false;
+            }
+
+            topVal = stack[top - 1];    //得到栈顶元素
+            top--;  //栈顶元素出栈
+
+            //如果右括号不是其对应的左括号, 直接返回false
+            if ((*s == ']' && topVal != '[')
+            || (*s == ')' && topVal != '(')
+            || (*s == '}' && topVal != '{'))
+            {
+                return false;
+            }
+        }
+        s++;
+    }
+
+    //如果遍历完字符串, 栈仍为空, 则返回true
+    if (top == 0)
+        return true;
+    else
+        return false;
+}
+```
