@@ -1284,3 +1284,419 @@ bool isValid(char * s)
         return false;
 }
 ```
+
+# LeetCode225. 用队列实现栈
+**题目**
+> 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（push、top、pop 和 empty）。
+
+[OJ链接](https://leetcode.cn/problems/implement-stack-using-queues/description/)
+
+**要求**
+> 实现 `MyStack` 类：
+
+> `void push(int x)` 将元素 x 压入栈顶。
+`int pop()` 移除并返回栈顶元素。
+`int top()` 返回栈顶元素。
+`boolean empty()` 如果栈是空的，返回` true` ；否则，返回 `false` 。
+
+**思路**
+> 1. 使用两个队列,一个队列`no_empty_que`存放已经存放的元素,另一个队列`empty_que`常空
+> 2. 当要压栈的时候,将元素压入`no_empty_que`
+> 3. 当要出栈的时候,将`no_empty_que`中除队尾元素全部存入`empty_que`,将队尾元素移出
+> 
+**实例**
+![1694006485610](image/LC刷题/1694006485610.gif)
+
+**代码实现**
+```c
+typedef int QDataType;
+
+// 链式结构表示队列
+typedef struct QListNode
+{
+  struct QListNode* next;
+  QDataType data;
+}QNode;
+
+// 队列的结构
+typedef struct Queue
+{
+  QNode* front;    //指向队列头
+  QNode* rear;     //指向队列尾
+  int size;        //记录队列的元素个数
+}Queue;
+
+// 初始化队列
+void QueueInit(Queue* q)
+{
+  assert(q);  //确保q合法
+
+  q->front = q->rear = NULL;  //将头和为置为 NULL 
+  q->size = 0;
+}
+
+// 判断队列是否为空, 如果为空返回非0, 非空返回0
+int QueueEmpty(Queue* q)
+{
+  assert(q);  //确保q合法
+
+  if (q->size == 0)
+  {
+    return 1;
+  }
+  else 
+  {
+    return 0;
+  }
+}
+
+// 队尾入队列
+void QueuePush(Queue* q, QDataType x)
+{
+  assert(q);  //确保q合法
+
+  //创建新结点
+  QNode* newNode = (QNode*)malloc(sizeof(QNode));
+  newNode->data = x;
+  newNode->next = NULL;
+
+  //入队列
+  if (QueueEmpty(q))
+  {
+    //如果队列为空,直接赋值
+    q->front = q->rear = newNode;
+  }
+  else 
+  {
+    //如果队列不为空,直接尾插
+    q->rear->next = newNode;
+    q->rear = newNode;
+  }
+
+  q->size++;
+}
+
+// 队头出队列
+void QueuePop(Queue* q)
+{
+  assert(q);  //确保q合法
+  assert(!QueueEmpty(q)); //确保队列不为空
+
+  if (q->size == 1)
+  {
+    //如果只有一个元素,头删的同时还要将尾指针置空
+    free(q->front);
+    q->front = q->rear = NULL;
+  }
+  else 
+  {
+    //如果不止一个元素,则只头删
+    QNode* nextNode = q->front->next;
+    free(q->front);
+    q->front = nextNode;
+  }
+
+  q->size--;
+}
+
+// 获取头部元素
+QDataType QueueFront(Queue* q)
+{
+  assert(q);  //确保q合法
+  assert(!QueueEmpty(q)); //确保队列不为空
+
+  return q->front->data;
+}
+
+// 获取尾部元素
+QDataType QueueBack(Queue* q)
+{
+  assert(q);  //确保q合法
+  assert(!QueueEmpty(q)); //确保队列不为空
+
+  return q->rear->data;
+}
+
+// 获取队列元素个数
+int QueueSize(Queue* q)
+{
+  assert(q);  //确保q合法
+
+  return q->size;
+}
+
+
+
+// 销毁队列
+void QueueDestroy(Queue* q)
+{
+  assert(q);
+
+  while(!QueueEmpty(q))
+  {
+    QNode* nextNode = q->front->next;
+    free(q->front);
+    q->front = nextNode;
+  }
+
+  q->front = q->rear = NULL;
+  q->size = 0;
+}
+
+//用两个队列构成一个栈
+typedef struct 
+{
+    Queue queue1;
+    Queue queue2;
+} MyStack;
+
+
+MyStack* myStackCreate() 
+{
+    MyStack* pst = (MyStack*)malloc(sizeof(MyStack));
+    QueueInit(&pst->queue1);
+    QueueInit(&pst->queue2);
+
+    return pst;
+}
+
+void myStackPush(MyStack* obj, int x) 
+{
+    if (!QueueEmpty(&obj->queue1))
+    {
+        QueuePush(&obj->queue1, x);
+    }
+    else
+    {
+        QueuePush(&obj->queue2, x);
+    }
+}
+
+
+
+int myStackPop(MyStack* obj) 
+{
+    Queue* no_empty_que = &obj->queue1;
+    Queue* empty_que = &obj->queue2;
+
+    if (!QueueEmpty(&obj->queue2))
+    {
+        no_empty_que = &obj->queue2;
+        empty_que = &obj->queue1;
+    }
+
+    //弹出有元素的队列直至只剩一个元素
+    while (QueueSize(no_empty_que) > 1)
+    {
+        QueuePush(empty_que, QueueFront(no_empty_que));
+        QueuePop(no_empty_que);
+    }
+
+    int pop = QueueFront(no_empty_que);
+    QueuePop(no_empty_que);
+    return pop;
+}
+
+int myStackTop(MyStack* obj) 
+{
+    if (!QueueEmpty(&obj->queue1))
+    {
+      return QueueBack(&obj->queue1);
+    }
+    else
+    {
+      return QueueBack(&obj->queue2);
+    }
+}
+
+bool myStackEmpty(MyStack* obj) 
+{
+    return QueueEmpty(&obj->queue1) && QueueEmpty(&obj->queue2);
+}
+
+void myStackFree(MyStack* obj) 
+{
+    QueueInit(&obj->queue1);
+    QueueInit(&obj->queue2);
+    free(obj);
+}
+
+```
+
+# LeetCode232. 用栈实现队列
+**题目**
+> 你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：[OJ链接](https://leetcode.cn/problems/implement-queue-using-stacks/)
+
+**要求**
+> 实现 `MyQueue` 类：
+
+> `void push(int x)` 将元素 x 推到队列的末尾
+`int pop()` 从队列的开头移除并返回元素
+`int peek()` 返回队列开头的元素
+`boolean empty() `如果队列为空，返回 true ；否则，返回 false
+
+**思路**
+> 1. 使用两个栈,一个专门负责压入数据`push_stack`,另一个专门负责弹出数据`pop_stack`
+> 2. 当push数据,直接将数据压入`push_stack`
+> 3. 当pop数据,如果`pop_stack`为空,先将`push_stack`中的数据压入,`pop_stack`,再接将`pop_stack`的栈顶弹出
+
+**实例**
+![1694008605204](image/LC刷题/1694008605204.gif)
+
+**代码实现**
+```c
+typedef int STDataType;
+
+typedef struct Stack
+{
+  STDataType* a;  //指向栈空间
+  int top;        //栈顶
+  int capacity;   //容量
+}Stack;
+
+// 初始化栈
+void StackInit(Stack* ps)
+{
+  assert(ps);
+  
+  ps->a = NULL;     
+  ps->top = 0;
+  ps->capacity = 0;
+}
+
+//入栈
+void StackPush(Stack* ps, STDataType data)
+{
+  assert(ps);       //确保ps合法
+
+  //如果容量不够则扩容
+  if (ps->capacity == ps->top)
+  {
+    int newCapacity = ps->capacity == 0 ? 4 : 2 * ps->capacity;   //定义新的容量
+    STDataType* tmp = (STDataType*)realloc(ps->a, sizeof(STDataType) * newCapacity);  //开辟新的空间
+    if (tmp == NULL)
+    {
+      perror("malloc error");
+      exit(-1);
+    }
+    else 
+    {
+      ps->a = tmp;
+      ps->capacity = newCapacity;
+    }
+  }
+
+  //将数据入栈
+  ps->a[ps->top] = data;
+  ps->top++;
+}
+
+// 出栈
+void StackPop(Stack* ps)
+{
+  assert(ps); //确保ps合法
+
+  assert(!StackEmpty(ps));  //确保栈不为空
+  ps->top--;
+
+}
+
+// 检测栈是否为空, 如果为空返回非零结果, 如果不为空返回 0
+int StackEmpty(Stack* ps)
+{
+  assert(ps); //确保ps合法
+  
+  if (ps->top > 0)
+  {
+    return 0;
+  }
+  else 
+  {
+    return 1;
+  }
+}
+
+// 获取栈顶元素
+STDataType StackTop(Stack* ps)
+{
+  assert(ps);   //确保ps合法
+  assert(!StackEmpty(ps));  //确保栈不为空
+
+  return ps->a[ps->top - 1];
+}
+
+// 获取栈中有效元素个数
+int StackSize(Stack* ps)
+{
+  assert(ps);   //确保ps合法
+  return ps->top;
+}
+
+// 销毁栈
+void StackDestroy(Stack* ps)
+{
+  assert(ps); //确保ps合法
+
+  free(ps->a);
+  ps->a = NULL;
+  ps->capacity = 0;
+  ps->top = 0;
+}
+
+typedef struct 
+{
+    Stack push_stack;
+    Stack pop_stack;
+} MyQueue;
+
+
+MyQueue* myQueueCreate() 
+{
+    MyQueue* que = (MyQueue*)malloc(sizeof(MyQueue));
+    StackInit(&que->push_stack);
+    StackInit(&que->pop_stack);
+
+    return que;
+}
+
+void myQueuePush(MyQueue* obj, int x) 
+{
+    StackPush(&obj->push_stack, x);
+}
+
+int myQueuePop(MyQueue* obj) 
+{
+    int pop = myQueuePeek(obj);
+    StackPop(&obj->pop_stack);
+
+    return pop;
+}
+
+int myQueuePeek(MyQueue* obj) 
+{
+    if (StackEmpty(&obj->pop_stack))
+    {
+        while (!StackEmpty(&obj->push_stack))
+      {
+          StackPush(&obj->pop_stack, StackTop(&obj->push_stack));
+          StackPop(&obj->push_stack);
+      }
+    }
+    int peek = StackTop(&obj->pop_stack);
+
+    return peek;
+}
+
+bool myQueueEmpty(MyQueue* obj) 
+{
+    return StackEmpty(&obj->push_stack) && StackEmpty(&obj->pop_stack);
+}
+
+void myQueueFree(MyQueue* obj) 
+{
+    StackDestroy(&obj->push_stack);
+    StackDestroy(&obj->pop_stack);
+    free(obj);
+}
+
+```
