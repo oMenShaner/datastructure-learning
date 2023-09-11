@@ -41,11 +41,39 @@ void HeapTest3()
   HeapPop(&heap);
   HeapPrint(&heap);
 }
+
+//升序
+void HeapSort(int* a, int n)
+{
+  int i = 0;
+  //建大堆
+  for (i = 0; i < n; i++)
+  {
+    AdjustUp(a, i);
+  }
+
+  //不断将根元素放置最后一个,让前面的元素向下调整
+  for (i = 0; i < n; i++)
+  {
+    Swap(&a[0], &a[n - 1 - i]);
+    AdjustDown(a, n - 1 - i, 0);
+  }
+}
+
 int main(void)
 {
   //HeapTest1();
   //HeapTest2();
-  HeapTest3();
+  //HeapTest3();
+  
+  int a[] = {3,4,5,6,9,10,2};
+  HeapSort(a, sizeof(a) / sizeof(a[0]));
 
+  int i = 0;
+  for (i = 0; i < sizeof(a) / sizeof(a[0]); i++)
+  {
+    printf("%d ", a[i]);
+  }
+  printf("\n");
   return 0;
 }
