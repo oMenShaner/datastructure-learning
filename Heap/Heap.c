@@ -72,6 +72,13 @@ void HeapArrayInit(Heap* hp, HPDatatype* a, int n)
 
   hp->a = tmp;
   memcpy(hp->a, a, sizeof(HPDatatype) * n);
+  
+  //建堆
+  int i = 0;
+  for (i = 0; i < n; i++)
+  {
+    AdjustUp(hp->a,i);
+  }
 }
 
 void HeapPrint(Heap* hp)
