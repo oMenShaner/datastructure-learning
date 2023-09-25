@@ -43,7 +43,7 @@ void HeapTest3()
 }
 
 //升序
-void HeapSort(int* a, int n)
+void HeapSort1(int* a, int n)
 {
   int i = 0;
   //建大堆
@@ -58,6 +58,27 @@ void HeapSort(int* a, int n)
     Swap(&a[0], &a[n - 1 - i]);
     AdjustDown(a, n - 1 - i, 0);
   }
+}
+
+//升序
+void HeapSort(int* a, int n)
+{
+  int i = 0;
+  //建大堆,从最后一个分支结点开始向下调整
+  for (i = (n-1-1)/2; i>=0; i--)
+  {
+    AdjustDown(a, n, i);
+  }
+
+  //将堆顶元素与堆底元素交换后,向下调整
+  int end = n - 1;
+  while (end > 0)
+  {
+    Swap(&a[0], &a[end]);
+    AdjustDown(a, end, 0);
+    --end;
+  }
+
 }
 
 int main(void)
