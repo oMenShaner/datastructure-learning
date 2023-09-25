@@ -73,11 +73,17 @@ void HeapArrayInit(Heap* hp, HPDatatype* a, int n)
   hp->a = tmp;
   memcpy(hp->a, a, sizeof(HPDatatype) * n);
   
-  //建堆
   int i = 0;
-  for (i = 0; i < n; i++)
+  //插入建堆
+  //for (i = 0; i < n; i++)
+  //{
+  //  AdjustUp(hp->a,i);
+  //}
+  
+  //从最后一个分支结点开始向下调整建堆
+  for (i = (n-2)/2; i >= 0; i--)
   {
-    AdjustUp(hp->a,i);
+    AdjustDown(hp->a, n, i);
   }
 }
 

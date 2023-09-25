@@ -34,8 +34,8 @@ void HeapTest3()
 {
   Heap heap;
 
-  int a[] = {7, 5, 6, 4, 3, 2, 1, 0};
-  HeapArrayInit(&heap, a, 7);
+  int a[] = {7, 8, 6, 4, 9, 2, 1, 0};
+  HeapArrayInit(&heap, a, 8);
   HeapPrint(&heap);
 
   HeapPop(&heap);
@@ -64,7 +64,7 @@ int main(void)
 {
   //HeapTest1();
   //HeapTest2();
-  //HeapTest3();
+  HeapTest3();
   
   int a[] = {3,4,5,6,9,10,2};
   HeapSort(a, sizeof(a) / sizeof(a[0]));
