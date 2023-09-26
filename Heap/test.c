@@ -197,7 +197,7 @@ int main(void)
   //printf("\n");
  
   //CreateData();
-  PrintTopK("data", 11);
+  PrintTopK("data", 10);
 
   return 0;
 }
