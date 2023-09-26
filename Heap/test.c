@@ -1,4 +1,5 @@
 #include "Heap.h"
+#include <time.h>
 
 void HeapTest1()
 { 
@@ -81,20 +82,122 @@ void HeapSort(int* a, int n)
 
 }
 
+//小堆向下调整
+void AdjustDown_small(HPDatatype* a, int n, int parent)
+{
+  assert(a);
+  
+  int child = parent * 2 + 1;
+
+  while (child < n)
+  {
+    if (child + 1 < n && a[child + 1] < a[child])
+    {
+      child++;
+    }
+
+    if (a[parent] > a[child])
+    {
+      Swap(&a[parent], &a[child]);
+      parent = child;
+      child = parent * 2 + 1;
+    }
+    else 
+    {
+      break;
+    }
+  }
+}
+
+//得到n个数中的最大k个
+void PrintTopK(const char* filename, int k)
+{
+  //打开文件
+  FILE* fout = fopen(filename, "r");
+  if (fout == NULL)
+  {
+    perror("fopen");
+  }
+
+  //申请一个大小为k的数组空间
+  int* a = (int*)malloc(sizeof(int) * k);
+
+  //先将前k个数据建小堆
+  int i = 0; 
+  for (i = 0; i < k; i++)
+  {
+    fscanf(fout, "%d", &a[i]);
+  }
+
+  for (i = (k-2)/2; i>=0; i--)
+  {
+    AdjustDown_small(a, k, i);
+  }
+
+  //遍历剩余的数，如果有比堆顶大的数，入堆并向下调整
+  int num = 0;
+  while (fscanf(fout, "%d", &num) != EOF)
+  {
+    //如果num大于堆顶元素，入堆并向下调整
+    if (num > a[0])
+    {
+      a[0] = num;
+      AdjustDown_small(a, k, 0);
+    }
+  }
+
+  fclose(fout);
+
+  for (i = 0; i < k; i++)
+  {
+    fprintf(stdout, "%d\n", a[i]);
+  }
+
+  free(a);
+}
+
+void CreateData()
+{
+  //打开文件
+  FILE* fout = fopen("data", "w+");
+  if (fout == NULL)
+  {
+    perror("fopen");
+  }
+
+  //随机放数
+  srand(time(0));
+  int i = 0;
+  int n = 10000000;
+
+  for (i = 0; i < 10000; i++)
+  {
+    int num = (rand() + i) % n; 
+    fprintf(fout, "%d\n", num);
+  }
+
+  fclose(fout);
+
+}
+
 int main(void)
 {
   //HeapTest1();
   //HeapTest2();
-  HeapTest3();
+  //HeapTest3();
   
-  int a[] = {3,4,5,6,9,10,2};
-  HeapSort(a, sizeof(a) / sizeof(a[0]));
+  //int a[] = {3,4,5,6,9,10,2};
+  //HeapSort(a, sizeof(a) / sizeof(a[0]));
 
-  int i = 0;
-  for (i = 0; i < sizeof(a) / sizeof(a[0]); i++)
-  {
-    printf("%d ", a[i]);
-  }
-  printf("\n");
+  //int i = 0;
+  //for (i = 0; i < sizeof(a) / sizeof(a[0]); i++)
+  //{
+  //  printf("%d ", a[i]);
+  //}
+  //printf("\n");
+ 
+  //CreateData();
+  PrintTopK("data", 11);
+
   return 0;
 }
