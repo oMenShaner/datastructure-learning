@@ -91,6 +91,75 @@ void PostOrder(BTNode* root)
   printf("%c ", root->data);
 }
 
+int BinaryTreeSize1(BTNode* root)
+{
+  static int count = 0;
+  if (root == NULL)
+    return count;
+
+  count++;  //遇到非空结点就++
+  BinaryTreeSize1(root->left);
+  BinaryTreeSize1(root->right);
+}
+
+int BinaryTreeSize2(BTNode* root, int* p)
+{
+  if (root == NULL)
+  {
+    return 0;
+  }
+
+  (*p)++;
+  BinaryTreeSize2(root->left, p);
+  BinaryTreeSize2(root->right, p);
+}
+// 二叉树结点个数
+int BinaryTreeSize(BTNode* root)
+{
+  if (root == NULL)
+  {
+    return 0;
+  }
+  else 
+  {
+    return BinaryTreeSize(root->left) + BinaryTreeSize(root->right) + 1;
+  }
+}
+
+// 二叉树叶子结点个数
+int BinaryTreeLeafSize(BTNode* root)
+{
+  if (root == NULL)
+  {
+    return 0;
+  }
+
+  if (root->left == NULL && root->right == NULL)
+  {
+    return 1;
+  }
+
+  return BinaryTreeLeafSize(root->left) + BinaryTreeLeafSize(root->right);  //既不是空结点也不是叶子结点
+}
+
+// 二叉树第k层结点个数
+int BinaryTreeLevelKSize(BTNode* root, int k)
+{
+  assert(k > 0);
+
+  if (root == NULL)
+  {
+    return 0;
+  }
+
+  if (k == 1)
+  {
+    return 1;
+  }
+
+  return BinaryTreeLevelKSize(root->left, k-1) + BinaryTreeLevelKSize(root->right, k-1);
+}
+
 int main(void)
 {
   BTNode* BinaryTree = CreateBinaryTree();
@@ -102,6 +171,22 @@ int main(void)
 
   PostOrder(BinaryTree);
   printf("\n");
+	
+  printf("二叉树结点个数: %d\n", BinaryTreeSize(BinaryTree));
 
+  printf("二叉树结点个数: %d\n", BinaryTreeSize1(BinaryTree));
+  printf("二叉树结点个数: %d\n", BinaryTreeSize1(BinaryTree));
+  int result = 0;
+  BinaryTreeSize2(BinaryTree, &result);
+  printf("%d\n", result);
+
+  result = 0;
+  BinaryTreeSize2(BinaryTree, &result);
+  printf("%d\n", result);
+  
+  printf("二叉树叶子结点个数: %d\n", BinaryTreeLeafSize(BinaryTree));
+  printf("二叉树第%d层的个数: %d\n", 1, BinaryTreeLevelKSize(BinaryTree, 1));
+  printf("二叉树第%d层的个数: %d\n", 2, BinaryTreeLevelKSize(BinaryTree, 2));
+  printf("二叉树第%d层的个数: %d\n", 3, BinaryTreeLevelKSize(BinaryTree, 3));
   return 0;
 }
