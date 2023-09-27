@@ -91,6 +91,28 @@ void PostOrder(BTNode* root)
   printf("%c ", root->data);
 }
 
+int BinaryTreeSize1(BTNode* root)
+{
+  static int count = 0;
+  if (root == NULL)
+    return count;
+
+  count++;  //遇到非空结点就++
+  BinaryTreeSize1(root->left);
+  BinaryTreeSize1(root->right);
+}
+
+int BinaryTreeSize2(BTNode* root, int* p)
+{
+  if (root == NULL)
+  {
+    return 0;
+  }
+
+  (*p)++;
+  BinaryTreeSize2(root->left, p);
+  BinaryTreeSize2(root->right, p);
+}
 // 二叉树结点个数
 int BinaryTreeSize(BTNode* root)
 {
@@ -149,8 +171,19 @@ int main(void)
 
   PostOrder(BinaryTree);
   printf("\n");
-
+	
   printf("二叉树结点个数: %d\n", BinaryTreeSize(BinaryTree));
+
+  printf("二叉树结点个数: %d\n", BinaryTreeSize1(BinaryTree));
+  printf("二叉树结点个数: %d\n", BinaryTreeSize1(BinaryTree));
+  int result = 0;
+  BinaryTreeSize2(BinaryTree, &result);
+  printf("%d\n", result);
+
+  result = 0;
+  BinaryTreeSize2(BinaryTree, &result);
+  printf("%d\n", result);
+  
   printf("二叉树叶子结点个数: %d\n", BinaryTreeLeafSize(BinaryTree));
   printf("二叉树第%d层的个数: %d\n", 1, BinaryTreeLevelKSize(BinaryTree, 1));
   printf("二叉树第%d层的个数: %d\n", 2, BinaryTreeLevelKSize(BinaryTree, 2));
