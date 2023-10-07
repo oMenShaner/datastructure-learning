@@ -160,6 +160,50 @@ int BinaryTreeLevelKSize(BTNode* root, int k)
   return BinaryTreeLevelKSize(root->left, k-1) + BinaryTreeLevelKSize(root->right, k-1);
 }
 
+// 二叉树查找值为x的结点
+BTNode* BinaryTreeFind(BTNode* root, BTDataType x)
+{
+  if (root == NULL)
+  {
+    return NULL;
+  }
+
+  if (root->data == x)
+  {
+    return root;
+  }
+ 
+  BTNode* ret;
+  ret = BinaryTreeFind(root->left, x);
+  if (ret)
+  {
+    return ret;
+  }
+
+  ret = BinaryTreeFind(root->right, x);
+  if (ret)
+  {
+    return ret;
+  }
+
+  return NULL;
+}
+
+// 层序遍历
+void levelOrder(BTNode* root)
+{
+  // 将根结点放入数组后, 如果数组不为空,弹出数组元素同时入该结点的左右孩子, 不存空结点
+  
+  // 创建数组当作队列
+  int capacity = BinaryTreeSize(root);
+  BTNode* a = (BTNode*)malloc(sizeof(BTNode) * capacity);
+  int size = 0;
+
+  if (root)
+  {
+    a[size++] = root;
+  }
+}  
 int main(void)
 {
   BTNode* BinaryTree = CreateBinaryTree();
@@ -188,5 +232,10 @@ int main(void)
   printf("二叉树第%d层的个数: %d\n", 1, BinaryTreeLevelKSize(BinaryTree, 1));
   printf("二叉树第%d层的个数: %d\n", 2, BinaryTreeLevelKSize(BinaryTree, 2));
   printf("二叉树第%d层的个数: %d\n", 3, BinaryTreeLevelKSize(BinaryTree, 3));
+
+  if (BinaryTreeFind(BinaryTree, 'A'))
+    printf("A\n");
+  if (BinaryTreeFind(BinaryTree, 'T'))
+    printf("T\n");
   return 0;
 }
