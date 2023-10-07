@@ -10,6 +10,157 @@ typedef struct BinaryTreeNode
   struct BinaryTreeNode* right; //指向右孩子
 }BTNode;  //二叉树结点
 
+//////////////////////////////////////////////////////////////队列///////////////////////////////////////////////////////
+typedef BTNode* QDataType;
+
+// 链式结构表示队列
+typedef struct QListNode
+{
+  struct QListNode* next;
+  QDataType data;
+}QNode;
+
+// 队列的结构
+typedef struct Queue
+{
+  QNode* front;    //指向队列头
+  QNode* rear;     //指向队列尾
+  int size;        //记录队列的元素个数
+}Queue;
+
+// 初始化队列
+void QueueInit(Queue* q);
+// 队尾入队列
+void QueuePush(Queue* q, QDataType x);
+// 队头出队列
+void QueuePop(Queue* q);
+// 获取队列头部元素
+QDataType QueueFront(Queue* q);
+// 获取队列尾部元素
+QDataType QueueBack(Queue* q);
+// 获取队列有效元素个数
+int QueueSize(Queue* q);
+// 检测队列是否为空, 如果为空返回非零结果, 如果非空返回0
+int QueueEmpty(Queue* q);
+// 销毁队列
+void QueueDestroy(Queue* q);
+
+// 初始化队列
+void QueueInit(Queue* q)
+{
+  assert(q);  //确保q合法
+
+  q->front = q->rear = NULL;  //将头和为置为 NULL 
+  q->size = 0;
+}
+
+// 队尾入队列
+void QueuePush(Queue* q, QDataType x)
+{
+  assert(q);  //确保q合法
+
+  //创建新结点
+  QNode* newNode = (QNode*)malloc(sizeof(QNode));
+  newNode->data = x;
+  newNode->next = NULL;
+
+  //入队列
+  if (QueueEmpty(q))
+  {
+    //如果队列为空,直接赋值
+    q->front = q->rear = newNode;
+  }
+  else 
+  {
+    //如果队列不为空,直接尾插
+    q->rear->next = newNode;
+    q->rear = newNode;
+  }
+
+  q->size++;
+}
+
+// 队头出队列
+void QueuePop(Queue* q)
+{
+  assert(q);  //确保q合法
+  assert(!QueueEmpty(q)); //确保队列不为空
+
+  if (q->size == 1)
+  {
+    //如果只有一个元素,头删的同时还要将尾指针置空
+    free(q->front);
+    q->front = q->rear = NULL;
+  }
+  else 
+  {
+    //如果不止一个元素,则只头删
+    QNode* nextNode = q->front->next;
+    free(q->front);
+    q->front = nextNode;
+  }
+
+  q->size--;
+}
+
+// 获取头部元素
+QDataType QueueFront(Queue* q)
+{
+  assert(q);  //确保q合法
+  assert(!QueueEmpty(q)); //确保队列不为空
+
+  return q->front->data;
+}
+
+// 获取尾部元素
+QDataType QueueBack(Queue* q)
+{
+  assert(q);  //确保q合法
+  assert(!QueueEmpty(q)); //确保队列不为空
+
+  return q->rear->data;
+}
+
+// 获取队列元素个数
+int QueueSize(Queue* q)
+{
+  assert(q);  //确保q合法
+
+  return q->size;
+}
+
+// 判断队列是否为空, 如果为空返回非0, 非空返回0
+int QueueEmpty(Queue* q)
+{
+  assert(q);  //确保q合法
+
+  if (q->size == 0)
+  {
+    return 1;
+  }
+  else 
+  {
+    return 0;
+  }
+}
+
+// 销毁队列
+void QueueDestroy(Queue* q)
+{
+  assert(q);
+
+  while(!QueueEmpty(q))
+  {
+    QNode* nextNode = q->front->next;
+    free(q->front);
+    q->front = nextNode;
+  }
+
+  q->front = q->rear = NULL;
+  q->size = 0;
+}
+/////////////////////////////////////////////////////////队列////////////////////////////////////////////////////
+
 // 创建结点
 BTNode* BuyNode(BTDataType x)
 {
@@ -192,27 +343,52 @@ BTNode* BinaryTreeFind(BTNode* root, BTDataType x)
 // 层序遍历
 void levelOrder(BTNode* root)
 {
-  // 将根结点放入数组后, 如果数组不为空,弹出数组元素同时入该结点的左右孩子, 不存空结点
-  
-  // 创建数组当作队列
-  int capacity = BinaryTreeSize(root);
-  BTNode* a = (BTNode*)malloc(sizeof(BTNode) * capacity);
-  int size = 0;
+  // 创建队列
+  Queue que;
+  QueueInit(&que);
 
+  // 将根结点放入队列后, 如果队列不为空,弹出队列元素同时入该结点的左右孩子, 不存空结点
   if (root)
   {
-    a[size++] = root;
+    QueuePush(&que, root);
   }
+
+  while (!QueueEmpty(&que)) 
+  {
+    //出队头元素, 并打印
+    BTNode* top = QueueFront(&que);
+    printf("%c ", top->data);
+    QueuePop(&que);
+
+    //如果刚才的top有左右孩子, 将左右孩子入队列
+    if (top->left)
+    {
+      QueuePush(&que, top->left);
+    }
+
+    if (top->right)
+    {
+      QueuePush(&que, top->right);
+    }
+  }
+
+  //销毁队列
+  QueueDestroy(&que);
 }  
+
 int main(void)
 {
   BTNode* BinaryTree = CreateBinaryTree();
+
+  printf("先序遍历: ");
   PreOrder(BinaryTree);
   printf("\n");
 
+  printf("中序遍历: ");
   InOrder(BinaryTree);
   printf("\n");
 
+  printf("后序遍历: ");
   PostOrder(BinaryTree);
   printf("\n");
 	
@@ -237,5 +413,10 @@ int main(void)
     printf("A\n");
   if (BinaryTreeFind(BinaryTree, 'T'))
     printf("T\n");
+
+  printf("层序遍历: ");
+  levelOrder(BinaryTree);
+  printf("\n");
+
   return 0;
 }
