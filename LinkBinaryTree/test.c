@@ -193,6 +193,8 @@ BTNode* CreateBinaryTree()
   node3->left = node5;
   node3->right = node6;
   
+  //验证是否是完全二叉树而添加的结点
+  //node2->right = BuyNode('G');
   return node1;
 }
 
@@ -356,19 +358,19 @@ void levelOrder(BTNode* root)
   while (!QueueEmpty(&que)) 
   {
     //出队头元素, 并打印
-    BTNode* top = QueueFront(&que);
-    printf("%c ", top->data);
+    BTNode* front = QueueFront(&que);
+    printf("%c ", front->data);
     QueuePop(&que);
 
-    //如果刚才的top有左右孩子, 将左右孩子入队列
-    if (top->left)
+    //如果刚才的front有左右孩子, 将左右孩子入队列
+    if (front->left)
     {
-      QueuePush(&que, top->left);
+      QueuePush(&que, front->left);
     }
 
-    if (top->right)
+    if (front->right)
     {
-      QueuePush(&que, top->right);
+      QueuePush(&que, front->right);
     }
   }
 
@@ -376,10 +378,53 @@ void levelOrder(BTNode* root)
   QueueDestroy(&que);
 }  
 
+// 判断二叉树是否为完全二叉树
+int BinaryTreeComplete(BTNode* root)
+{
+  // 创建队列用来存放层序遍历的二叉树的结果
+  Queue que;
+  QueueInit(&que);
+
+  // 层序遍历二叉树, 同样将NULL也存放进去
+  if (root)
+  {
+    QueuePush(&que, root);
+  }
+
+  while(!QueueEmpty(&que))
+  {
+    // 得到此时队头元素,并将该元素出队列
+    // 如果队头元素为空,直接break
+    BTNode* front = QueueFront(&que);
+    if (front == NULL)
+    {
+      break;
+    }
+    QueuePop(&que);
+
+    // 将队头元素的左右结点入队列,NULL结点也入队列
+    QueuePush(&que, front->left);
+    QueuePush(&que, front->right);
+  }
+
+  // 遍历此时队列中剩余元素,如果有非空元素则不为完全二叉树
+  QNode* cur = que.front;
+  while (cur != que.rear)
+  {
+    if (cur->data != NULL)
+    {
+      return 0;
+    }
+    cur = cur->next;
+  }
+
+  // 如果运行到这,说明该树是完全二叉树
+  return 1;
+}
+
 int main(void)
 {
   BTNode* BinaryTree = CreateBinaryTree();
-
   printf("先序遍历: ");
   PreOrder(BinaryTree);
   printf("\n");
@@ -417,6 +462,15 @@ int main(void)
   printf("层序遍历: ");
   levelOrder(BinaryTree);
   printf("\n");
+
+  if (BinaryTreeComplete(BinaryTree))
+  {
+    printf("是完全二叉树\n");
+  }
+  else 
+  {
+    printf("不是完全二叉树\n");
+  }
 
   return 0;
 }
