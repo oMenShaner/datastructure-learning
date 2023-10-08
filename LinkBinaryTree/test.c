@@ -378,6 +378,20 @@ void levelOrder(BTNode* root)
   QueueDestroy(&que);
 }  
 
+// 销毁二叉树
+void BinaryTreeDestory(BTNode* root)
+{
+  if (root == NULL)
+  {
+    return ;
+  }
+
+  // 后序顺序销毁
+  BinaryTreeDestory(root->left);
+  BinaryTreeDestory(root->right);
+  free(root);
+}
+
 // 判断二叉树是否为完全二叉树
 int BinaryTreeComplete(BTNode* root)
 {
@@ -471,6 +485,7 @@ int main(void)
   {
     printf("不是完全二叉树\n");
   }
-
+  
+  BinaryTreeDestory(BinaryTree);
   return 0;
 }
