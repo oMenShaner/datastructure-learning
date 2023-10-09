@@ -14,10 +14,18 @@ void TestShell()
   PrintArray(a, sizeof(a)/sizeof(int));
 }
 
+void TestBubble()
+{
+  int a[] = {9,1,2,5,7,4,8,6,3,5,1,2,3,5,1,8,3};
+  BubbleSort(a, sizeof(a)/sizeof(int));
+  PrintArray(a, sizeof(a)/sizeof(int));
+}
+
 int main(void)
 {
   //TestInsert();
-  TestShell();
+  //TestShell();
+  TestBubble();
 
   return 0;
 }

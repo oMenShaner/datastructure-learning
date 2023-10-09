@@ -1,5 +1,12 @@
 #include"Sort.h"
 
+void Swap(int* a, int* b)
+{
+  int tmp = *a;
+  *a = *b;
+  *b = tmp;
+}
+
 void PrintArray(int* a, int n)
 {
   int i = 0;
@@ -54,7 +61,7 @@ void ShellSort(int* a, int n)
 
   while (gap > 1)
   {
-    gap = n/3 + 1;
+    gap = gap/3 + 1;
     int i = 0;
     // 每组依次排序 从0一直排到n-gap-1
     for (i = 0; i < n-gap; i++)
@@ -78,7 +85,27 @@ void ShellSort(int* a, int n)
   }
 }
 
-
+void BubbleSort(int* a, int n)
+{
+  int i = 0;
+  int exchange = 0;
+  for (i = 0; i < n-1; i++)
+  {
+    int j = 0;
+    for (j = 0; j < n-i-1; j++)
+    {
+      if (a[j] > a[j+1])
+      {
+        Swap(&a[j], &a[j+1]);
+        exchange = 1;
+      }
+    }
+    if (exchange == 0)
+    {
+      break;
+    }
+  }
+}
 
 
 
