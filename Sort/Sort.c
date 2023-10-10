@@ -7,6 +7,29 @@ void Swap(int* a, int* b)
   *b = tmp;
 }
 
+void AdjustDown(int* a, int n, int parent)
+{
+  int child = parent * 2 + 1;
+
+  while (child < n)
+  {
+    if (child + 1 < n && a[child] < a[child+1])
+    {
+      child++;
+    }
+
+    if (a[parent] < a[child])
+    {
+      Swap(&a[parent], &a[child]);
+      parent = child;
+      child = parent * 2;
+    }
+    else 
+    {
+      break;
+    }
+  }
+}
 void PrintArray(int* a, int n)
 {
   int i = 0;
@@ -107,8 +130,65 @@ void BubbleSort(int* a, int n)
   }
 }
 
+void HeapSort(int* a, int n)
+{
+  // 在原有的数组基础上 从后往前向下调整建堆
+  // 将堆顶元素与堆底元素交换后 在不包括最后一个元素的情况下向下调整
+  
+  int i = 0;
+  for (i = (n-1-1)/2; i >= 0; i--)
+  {
+    AdjustDown(a, n, i);
+  }
+
+  for (i = n - 1; i > 0; i--)
+  {
+    Swap(&a[0], &a[i]);
+    AdjustDown(a, i, 0);
+  }
+}
 
 
+void SelectSort(int* a, int n)
+{
+  // 每轮选出数组中最大数和最小数的下标
+  // 将最大数放在数组最后 将最小数放在数组最前
+  int begin = 0;
+  int end = n - 1;
+
+  while (begin < end)
+  {
+    int maxi = begin;
+    int mini = begin;
+    int i = 0;
+    
+    // 找到最大和最小下标
+    for (i = begin+1; i <= end; i++)
+    {
+      if (a[i] > a[maxi])
+      {
+        maxi = i;
+      }
+
+      if (a[i] < a[mini])
+      {
+        mini = i;
+      }
+    }
+
+    // 交换 注意可能会出现最大或最小数已经被交换了的情况
+    Swap(&a[begin], &a[mini]);
+
+    if (maxi == begin)
+    {
+      maxi = mini;
+    }
+    Swap(&a[end], &a[maxi]);
+
+    begin++;
+    end--;
+  }
+}
 
 
 
