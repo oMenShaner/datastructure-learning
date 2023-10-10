@@ -1812,3 +1812,303 @@ void myCircularQueueFree(MyCircularQueue* obj)
 
 ```
 
+
+# LeetCode965. 单值二叉树
+**题目**
+![1696941422638](image/LC刷题/1696941422638.png)
+[Oj链接](https://leetcode-cn.com/problems/univalued-binary-tree/)
+
+**思路**
+> 一棵树的所有值都是一个值, 那么就可以认为每个结点的左右孩子都和该结点的值相等
+> 将一棵树分为根 左子树 右子树, 如果值不相等直接返回 false
+
+> 先判断根结点的左右孩子是否和根结点的值一样
+> - 如果一样,先判断左子树,再判断右子树,最后返回两结果的逻辑与结果
+> - 如果不一样,直接返回false,
+
+**代码实现**
+```c
+bool isUnivalTree(struct TreeNode* root)
+{
+    if (root == NULL)   
+        return true;
+    
+    if (root->left && root->val != root->left->val)     //如果左子树存在并且值不等, 返回false
+        return false;
+    
+    if (root->right && root->val != root->right->val)   //如果右子树存在并且值不等, 返回false
+        return false;
+    
+    return isUnivalTree(root->left) && isUnivalTree(root->right);   //左子树为单值 && 右子树为单值
+}
+```
+
+
+# LeetCode100. 相同的树
+**题目**
+![1696941753684](image/LC刷题/1696941753684.png)
+[Oj链接](https://leetcode-cn.com/problems/same-tree/)
+
+**思路**
+> - 如果两个树都为空, 则两树相等; 
+> - 如果两个树中只有一个是空, 那么两数必然不相等.
+> - 如果两个数都不为空, 则先判断两树的根结点是否值一样. 
+>   - 若一样, 继续递归调用判断左子树和右子树是否都对应相等;
+>   - 若不一样,直接向上一层返回false
+
+**代码实现**
+```c
+bool isSameTree(struct TreeNode* p, struct TreeNode* q)
+{
+    if (p == NULL && q == NULL) //如果两个结点都是空, 返回true
+    {
+        return true;
+    }
+
+    if (p == NULL || q == NULL) //在两个结点不同时为空的情况下, 有一个为空直接返回false
+    {
+        return false;
+    }
+
+    //剩余就只有两结点都不为空的情况了
+    if (p->val != q->val)
+    {
+        return false;
+    }
+
+    return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+}
+```
+
+# LeetCode101. 对称二叉树
+**题目**
+![1696942218424](image/LC刷题/1696942218424.png)
+[Oj链接](https://leetcode-cn.com/problems/symmetric-tree/)
+
+**思路**
+和判断两树是否一样的思路差不多
+> 一个树是对称二叉树的条件就是: 
+> 1. 根结点的左右孩子一样
+> 2. 左子树的左子树 和 右子树的右子树 一样
+> 3. 左子树的右子树 和 右子树的左子树 一样
+
+> 由此对于左右子树的判断我们可以创建一个递归函数, 类似于判断两树是否一样, 函数参数是两个树
+> - 如果两个树都是空, 则两树对称
+> - 如果两个树中只有一个是空, 则两树不对称
+> - 如果两个数都不为空, 则判断 左左和右右是否相等, 左右和右左是否相同
+
+**代码实现**
+```c
+bool isSymmetricTree(struct TreeNode* q, struct TreeNode* p)
+{
+    if (q == NULL && p == NULL)
+        return true;
+    
+    if (q == NULL || p == NULL)
+        return false;
+    
+    if (q->val != p->val)
+        return false;
+    
+    return isSymmetricTree(q->left, p->right) 
+        && isSymmetricTree(q->right, p->left);
+}
+
+bool isSymmetric(struct TreeNode* root)
+{
+    if (root == NULL)
+        return true;
+    return isSymmetricTree(root->left, root->right);
+}
+```
+
+# LeetCode144. 二叉树的前序遍历
+# LeetCode94. 二叉树的中序遍历
+# LeetCode145. 二叉树的后序遍历
+
+三题类似,这里直接一起贴上来
+**题目**
+二叉树的前序遍历。 [Oj链接](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+
+二叉树中序遍历 。[Oj链接](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
+
+二叉树的后序遍历 。[Oj链接](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)
+
+**思路**
+就拿前序遍历来说, 对于普通打印的前序遍历就不多说了, 相关可以看我的文章:[链式二叉树](https://blog.csdn.net/Kuzuba/article/details/133382229)
+
+在这里, 主要是理解题目意思, 首先我们来看题目给的接口函数描述
+```c
+int* preorderTraversal(struct TreeNode* root, int* returnSize);
+```
+> 函数需要我们将前序遍历的结果存到一个数组当中, 并且将数组返回, 这就需要我们动态开辟一段空间.
+> `int* returnSize`表示我们同时要返回二叉树的结点个数, 通过传址调用返回.
+
+> 1. 获得二叉数结点个数, 并开辟同样元素个数空间的数组空间
+> 2. 前序遍历二叉树, 自己创建一个递归函数, 为了方便递归调用来存放数据到数组, 将数组下标传址调用
+
+**代码实现**
+- 前序遍历
+```c
+// 二叉树结点个数
+int binaryTreeSize(struct TreeNode* root)
+{
+    if (root == NULL)
+    {
+        return 0;
+    }
+
+    return 1 + binaryTreeSize(root->left) + binaryTreeSize(root->right);
+}
+
+void preOrder(struct TreeNode* root, int* a, int* i)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    a[(*i)++] = root->val;
+    preOrder(root->left, a, i);
+    preOrder(root->right, a, i);
+}
+//首先得到二叉树结点个数, 根据个数开辟数组空间
+//接着前序遍历二叉树， 将结点的值按序存入数组中， 注意函数参数传址调用
+int* preorderTraversal(struct TreeNode* root, int* returnSize)
+{
+    *returnSize = binaryTreeSize(root);
+    int* a = (int*)malloc(sizeof(int) * (*returnSize));
+
+    int index = 0;
+    preOrder(root, a, &index);
+
+    return a;
+}
+```
+
+- 中序遍历
+```c
+int TreeSize(struct TreeNode* root)
+{
+    return root == NULL ? 0 : 1 + TreeSize(root->left) + TreeSize(root->right);
+}
+
+void inOrder(struct TreeNode* root, int* a, int* pi)
+{
+    if (root == NULL)
+    {
+        return ;
+    }
+
+    inOrder(root->left, a, pi);
+    a[(*pi)++] = root->val;
+    inOrder(root->right, a, pi);
+}
+int* inorderTraversal(struct TreeNode* root, int* returnSize)
+{
+    *returnSize = TreeSize(root);
+    int* a = (int*)malloc(sizeof(int) * (*returnSize));
+
+    int index = 0;
+    inOrder(root, a, &index);
+
+    return a;
+}
+```
+
+- 后序遍历
+```c
+int TreeSize(struct TreeNode* root)
+{
+    return root == NULL ? 0 : 1 + TreeSize(root->left) + TreeSize(root->right);
+}
+
+void postOrder(struct TreeNode* root, int* a, int* pi)
+{
+    if (root == NULL)
+    {
+        return;
+    }    
+
+    postOrder(root->left, a, pi);
+    postOrder(root->right, a, pi);
+    a[(*pi)++] = root->val;
+}
+int* postorderTraversal(struct TreeNode* root, int* returnSize)
+{
+    *returnSize = TreeSize(root);
+    int* a = (int*)malloc(sizeof(int) * (*returnSize));
+
+    int index = 0;
+    postOrder(root, a, &index);
+    return a;
+}
+```
+
+# LeetCode572. 另一棵树的子树
+**题目**
+![1696943444959](image/LC刷题/1696943444959.png)
+[Oj链接](https://leetcode-cn.com/problems/subtree-of-another-tree/)
+
+**思路**
+> 深度搜索每一个结点, 如果结点与`subRoot`的根结点相同, 则进行判断以这两个结点为根结点的树是否相同
+
+> 这里需要用到前面用到的判断两个树是否一样的函数代码.
+
+> 1. 如果 `root` 和 `subRoot` 都为空, 则直接返回 `true`
+> 2. 如果 `root` 和 `subRoot` 两个只有有一个为空, 则直接返回 `false`
+> 3. 此时只剩下两者都不为空的情况, 深度搜索判断 `root` 每个结点是否和 `subRoot` 的根结点一样
+> - 如果一样, 则使用 `isSameTree`进行判断
+> - 如果不一样, 继续深度搜索
+> 4. 最后将左右子树的两个结果经过逻辑或得到结果
+
+```c
+bool isSameTree(struct TreeNode* p, struct TreeNode* q)
+{
+    if (p == NULL && q == NULL) //如果两个结点都是空, 返回true
+    {
+        return true;
+    }
+
+    if (p == NULL || q == NULL) //在两个结点不同时为空的情况下, 有一个为空直接返回false
+    {
+        return false;
+    }
+
+    //剩余就只有两结点都不为空的情况了
+    if (p->val != q->val)
+    {
+        return false;
+    }
+
+    return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+}
+
+// 如果根结点对应的树是subRoot, 则返回true
+// 如果不是 寻找左子树有没有
+//          寻找右子树有没有
+bool isSubtree(struct TreeNode* root, struct TreeNode* subRoot)
+{
+    if (root == NULL && subRoot == NULL)
+    {
+        return true;
+    }
+
+    if (root == NULL || subRoot == NULL)
+    {
+        return false;
+    }
+    
+    if (root->val == subRoot->val)
+    {
+        if (isSameTree(root, subRoot))
+        {
+            return true;
+        }
+    }
+    
+
+    return isSubtree(root->left, subRoot) 
+    || isSubtree(root->right, subRoot);
+}
+```
