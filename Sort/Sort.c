@@ -190,11 +190,164 @@ void SelectSort(int* a, int n)
   }
 }
 
+// 三数取中
+int getMidi(int* a, int left, int right)
+{
+  int mid = (left + right) / 2;
+  if (a[mid] > a[left])
+  {
+    if (a[left] > a[right]) //此时mid是最大值
+    {
+      return left;
+    }
+    else if (a[right] > a[mid]) 
+    {
+      return mid;
+    }
+    else 
+    {
+      return right;
+    }
+  }
+  else // a[left] > a[mid]
+  {
+    if (a[right] > a[left]) //此时mid是最小值
+    {
+      return left;
+    }
+    else if (a[right] < a[mid])
+    {
+      return mid;
+    }
+    else 
+    {
+      return right;
+    }
+  }
+}
 
+// hoare版本
+int PartSort1(int* a, int left, int right)
+{
+  // 每次定下基准元素key, 将key元素放在此部分首元素
+  // 先从right向前找比key小的值, 如果找到记录下标
+  // 再从left向后找比key大的值, 如果找到记录下标
+  // 将找到的两个数进行交换, 重复两次寻找, 直至相遇
+  // 记录相遇的下标, 将此部分首元素和相遇下标元素进行交换
+  // 以上是一躺排序
+  
+  int mid = getMidi(a, left, right);
+  Swap(&a[left], &a[mid]);
 
+  int keyi = left;
+  while (left < right)
+  {
+    // 先从right开始向前找比key小的值
+    while (left < right && a[right] >= a[keyi])
+    {
+      right--;
+    }
 
+    // 再从left开始向后找比key大的值
+    while (left < right && a[left] <= a[keyi])
+    {
+      left++;
+    }
+    Swap(&a[left], &a[right]);
+  }
+  Swap(&a[keyi], &a[left]);
 
+  return left;
+}
 
+// 挖坑法
+int PartSort2(int* a, int left, int right)
+{
+  int mid = getMidi(a, left, right);
+  Swap(&a[left], &a[mid]);
+
+  int key = a[left];
+  int hole = left;
+  while (left < right)
+  {
+    // 先找小
+    while (left < right && a[right] >= key)
+    {
+      right--;
+    }
+    //找到直接赋值到坑位, 同时将此时的right位置当作坑
+    a[hole] = a[right];
+    hole = right;
+
+    // 再找大
+    while (left < right && a[left] <= key)
+    {
+      left++;
+    }
+    //找到直接赋值到坑位, 同时将此时的left位置当作坑
+    a[hole] = a[left];
+    hole = left;
+  }
+  a[hole] = key;
+  return left;
+}
+
+// 前后指针
+int PartSort3(int*a, int left, int right)
+{
+  // prev 和 cur  prev = left   cur = left+1
+  // cur向后遍历  如果遇到比key值小的值 将cur位置的值与prev指向后一位置的值进行交换
+  int mid = getMidi(a, left, right);
+  Swap(&a[left], &a[mid]);
+  
+  int keyi = left;
+  int prev = left;
+  int cur = prev + 1;
+  
+  while (cur <= right)
+  {
+    if (a[cur] < a[keyi] && ++prev != cur)
+    {
+      Swap(&a[cur], &a[prev]);
+    }
+    cur++;
+  }
+  Swap(&a[keyi], &a[prev]);
+
+  return prev;
+}
+
+void QuickSort1(int* a, int left, int right)
+{
+  // 每一次排序可以确认一个数的位置, 再在这个数左右进行二分继续排序
+  
+  if (left >= right)
+    return ;
+
+  int keyi = PartSort1(a, left, right);
+  QuickSort1(a, left, keyi-1);
+  QuickSort1(a, keyi+1, right);
+}
+
+void QuickSort2(int* a, int left, int right)
+{
+  if (left >= right)
+    return ;
+
+  int keyi = PartSort2(a, left, right);
+  QuickSort2(a, left, keyi-1);
+  QuickSort2(a, keyi+1, right);
+}
+
+void QuickSort3(int* a, int left, int right)
+{
+  if (left >= right)
+    return ;
+
+  int keyi = PartSort3(a, left, right);
+  QuickSort2(a, left, keyi-1);
+  QuickSort2(a, keyi+1, right);
+}
 
 
 

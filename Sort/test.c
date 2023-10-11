@@ -36,6 +36,14 @@ void TestSelect()
   PrintArray(a, sizeof(a)/sizeof(int));
 }
 
+
+void TestQuick()
+{
+  int a[] = {9,1,2,5,7,4,8,6,3,5,1,2,3,5,1,8,3};
+  QuickSort3(a, 0, sizeof(a)/sizeof(int) - 1);
+  PrintArray(a, sizeof(a)/sizeof(int));
+}
+
 void TestOP()
 {
   srand(time(0));
@@ -47,6 +55,8 @@ void TestOP()
   int* a5 = (int*)malloc(sizeof(int) * N);
   int* a6 = (int*)malloc(sizeof(int) * N);
   int* a7 = (int*)malloc(sizeof(int) * N);
+  int* a8 = (int*)malloc(sizeof(int) * N);
+  int* a9 = (int*)malloc(sizeof(int) * N);
 
   int i = 0;
   for (i = 0; i < N; i++)
@@ -58,6 +68,8 @@ void TestOP()
      a5[i] = a1[i];
      a6[i] = a1[i];
      a7[i] = a1[i];
+     a8[i] = a1[i];
+     a9[i] = a1[i];
   }  
    
   clock_t begin1 = clock();
@@ -81,20 +93,30 @@ void TestOP()
   clock_t end5 = clock();  
  
   clock_t begin6 = clock();
-  //QuickSort(a6, N);   
+  QuickSort1(a6, 0, sizeof(a6)/sizeof(int) - 1);   
   clock_t end6 = clock();  
 
   clock_t begin7 = clock();
   //MergeSort(a7, N);   
   clock_t end7 = clock();  
 
+  clock_t begin8 = clock();
+  QuickSort1(a8, 0, sizeof(a8)/sizeof(int) - 1);   
+  clock_t end8 = clock();  
+
+  clock_t begin9 = clock();
+  QuickSort1(a9, 0, sizeof(a9)/sizeof(int) - 1);   
+  clock_t end9 = clock();  
+
   printf("InsertSort:%.3lf\n",(double)(end1 - begin1)/CLOCKS_PER_SEC);
   printf("ShellSort:%.3lf\n", (double)(end2 - begin2)/CLOCKS_PER_SEC);  
   printf("BubbleSort:%.3lf\n", (double)(end3 - begin3)/CLOCKS_PER_SEC);  
   printf("SelectSort:%.3lf\n", (double)(end5 - begin5)/CLOCKS_PER_SEC);  
   printf("HeapSort:%.3lf\n", (double)(end4 - begin4)/CLOCKS_PER_SEC);  
-  printf("QuickSort:%.3lf\n", (double)(end6 - begin6)/CLOCKS_PER_SEC);  
+  printf("QuickSort(hoare):%.3lf\n", (double)(end6 - begin6)/CLOCKS_PER_SEC);  
   printf("MergeSort:%.3lf\n", (double)(end7 - begin7)/CLOCKS_PER_SEC);
+  printf("QuickSort(hole):%.3lf\n", (double)(end8 - begin8)/CLOCKS_PER_SEC);  
+  printf("QuickSort(two_point):%.3lf\n", (double)(end9 - begin9)/CLOCKS_PER_SEC);  
 
   free(a1);
   free(a2);
@@ -103,6 +125,8 @@ void TestOP()
   free(a5);
   free(a6);
   free(a7);
+  free(a8);
+  free(a9);
 
 }
 
@@ -115,6 +139,7 @@ int main(void)
   //TestHeap();
   //TestSelect();
   TestOP();
+  //TestQuick();
 
   return 0;
 }
