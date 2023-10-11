@@ -240,20 +240,30 @@ int PartSort1(int* a, int left, int right)
   Swap(&a[left], &a[mid]);
 
   int keyi = left;
-  while (left < right)
+  
+  // 小区间情况 right-left+1 <= 10, 直接插入排序可以省去87.5%的递归子树
+  int size = right - left + 1;
+  if (size <= 10)
   {
-    // 先从right开始向前找比key小的值
-    while (left < right && a[right] >= a[keyi])
+    InsertSort(a, size);
+  }
+  else 
+  {
+    while (left < right)
     {
-      right--;
-    }
+      // 先从right开始向前找比key小的值
+      while (left < right && a[right] >= a[keyi])
+      {
+        right--;
+      }
 
-    // 再从left开始向后找比key大的值
-    while (left < right && a[left] <= a[keyi])
-    {
-      left++;
+      // 再从left开始向后找比key大的值
+      while (left < right && a[left] <= a[keyi])
+      {
+        left++;
+      }
+      Swap(&a[left], &a[right]);
     }
-    Swap(&a[left], &a[right]);
   }
   Swap(&a[keyi], &a[left]);
 
@@ -268,25 +278,35 @@ int PartSort2(int* a, int left, int right)
 
   int key = a[left];
   int hole = left;
-  while (left < right)
-  {
-    // 先找小
-    while (left < right && a[right] >= key)
-    {
-      right--;
-    }
-    //找到直接赋值到坑位, 同时将此时的right位置当作坑
-    a[hole] = a[right];
-    hole = right;
 
-    // 再找大
-    while (left < right && a[left] <= key)
+  // 小区间情况 right-left+1 <= 10, 直接插入排序可以省去87.5%的递归子树
+  int size = right - left + 1;
+  if (size <= 10)
+  {
+    InsertSort(a, size);
+  }
+  else 
+  {
+    while (left < right)
     {
-      left++;
+      // 先找小
+      while (left < right && a[right] >= key)
+      {
+        right--;
+      }
+      //找到直接赋值到坑位, 同时将此时的right位置当作坑
+      a[hole] = a[right];
+      hole = right;
+
+      // 再找大
+      while (left < right && a[left] <= key)
+      {
+        left++;
+      }
+      //找到直接赋值到坑位, 同时将此时的left位置当作坑
+      a[hole] = a[left];
+      hole = left;
     }
-    //找到直接赋值到坑位, 同时将此时的left位置当作坑
-    a[hole] = a[left];
-    hole = left;
   }
   a[hole] = key;
   return left;
@@ -303,7 +323,7 @@ int PartSort3(int*a, int left, int right)
   int keyi = left;
   int prev = left;
   int cur = prev + 1;
-  
+ 
   while (cur <= right)
   {
     if (a[cur] < a[keyi] && ++prev != cur)
@@ -349,11 +369,39 @@ void QuickSort3(int* a, int left, int right)
   QuickSort2(a, keyi+1, right);
 }
 
+void QuickSortNorR(int*a, int left, int right)
+{
+  // 创建栈 并按照先left后right的顺序入栈
+  Stack stack;
+  StackInit(&stack);
+  StackPush(&stack, left);
+  StackPush(&stack, right);
 
+  // 将栈顶两个元素出栈 进行一轮排序
+  // 每次排序后 按照先右后左的顺序将区间的left和right入栈
+  // 如果right<=left 不入栈
+  while (!StackEmpty(&stack))
+  {
+    int right = StackTop(&stack);
+    StackPop(&stack);
+    int left = StackTop(&stack);
+    StackPop(&stack);
 
-
-
-
-
-
-
+    // 这里使用挖坑法
+    int keyi = PartSort2(a, left, right);
+    
+    // 先右后左 先left后right入栈
+    if (right > keyi+1)
+    {
+      StackPush(&stack, keyi+1);
+      StackPush(&stack, right);
+    }
+    
+    if (keyi-1 > left)
+    {
+      StackPush(&stack, left);
+      StackPush(&stack, keyi-1);
+    }
+  }
+  StackDestroy(&stack);
+}
