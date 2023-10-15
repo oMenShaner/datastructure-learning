@@ -196,6 +196,7 @@ BTNode* CreateBinaryTree()
   //验证是否是完全二叉树而添加的结点
   node2->right = BuyNode('G');
   return node1;
+
 }
 
 // 二叉树前序遍历
