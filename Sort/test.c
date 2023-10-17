@@ -51,6 +51,13 @@ void TestMerge()
   PrintArray(a, sizeof(a)/sizeof(int));
 }
 
+void TestCount()
+{
+  int a[] = {9,1,2,5,7,4,8,6,3,5,1,2,3,5,1,8,3};
+  CountSort(a, sizeof(a)/sizeof(int));
+  PrintArray(a, sizeof(a)/sizeof(int));
+}
+
 void TestOP()
 {
   srand(time(0));
@@ -154,8 +161,9 @@ int main(void)
   //TestHeap();
   //TestSelect();
   //TestQuick();
-  //TestMerge();
-  TestOP();
+  TestMerge();
+  TestCount();
+  //TestOP();
 
   return 0;
 }

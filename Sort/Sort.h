@@ -20,3 +20,4 @@ void QuickSort3(int* a, int left, int right);
 void QuickSortNorR(int* a, int left, int right);
 void MergeSort(int* a, int n);
 void MergeSortNorR(int* a, int n);
+void CountSort(int* a, int n);

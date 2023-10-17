@@ -504,3 +504,53 @@ void MergeSortNorR(int* a, int n)
 
   free(tmp);
 }
+
+void CountSort(int* a, int n)
+{
+  int min = a[0];
+  int max = a[0];
+  int i = 0;
+  
+  // 得到序列的最大最小值
+  for (i = 1; i < n; i++)
+  {
+    if (a[i] < min)
+    {
+      min = a[i];
+    }
+
+    if (a[i] > max)
+    {
+      max = a[i];
+    }
+  }
+
+  // 得到序列的范围
+  int range = max - min + 1;
+  printf("range:%d\n", range);
+
+  int* tmp = (int*)calloc(range, sizeof(int));
+  if (tmp == NULL)
+  {
+    perror("malloc fail");
+  }
+
+  // 统计各数
+  for (i = 0; i < n; i++)
+  {
+    tmp[a[i] - min]++;
+  }
+
+  // 从小到大重新copy到原数组
+  int index = 0;
+  for (i = 0; i < range; i++)
+  {
+    while (tmp[i])
+    {
+      a[index++] = i + min;
+      tmp[i]--;
+    }
+  }
+  
+  free(tmp);
+}
