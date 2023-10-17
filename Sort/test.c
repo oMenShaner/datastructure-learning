@@ -60,7 +60,7 @@ void TestCount()
 
 void TestRadix()
 {
-  int a[] = {9,1,2,5,7,4,8,6,3,5,1,2,3,5,1,8,3};
+  int a[] = {-1,-54,88,-902,1,2,33,44,666,18,30};
   RadixSort(a, sizeof(a)/sizeof(int));
   PrintArray(a, sizeof(a)/sizeof(int));
 }
@@ -187,8 +187,8 @@ int main(void)
   //TestQuick();
   //TestMerge();
   //TestCount();
-  //TestRadix();
-  TestOP();
+  TestRadix();
+  //TestOP();
 
   return 0;
 }

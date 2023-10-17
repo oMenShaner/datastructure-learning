@@ -555,10 +555,8 @@ void CountSort(int* a, int n)
   free(tmp);
 }
 
-int getMaxDigit(int* a, int n)
+int getMax(int* a, int n)
 {
-
-  // 得到最大数, 并取到其的位数
   int i = 0;
   int max = a[0];
   for (i = 1; i < n; i++)
@@ -568,7 +566,30 @@ int getMaxDigit(int* a, int n)
       max = a[i];
     }
   }
-  
+
+  return max;
+}
+
+int getMin(int* a, int n)
+{
+  int i = 0; 
+  int min = a[0];
+
+  for (i = 1; i < n; i++)
+  {
+    if (a[i] < min)
+    {
+      min = a[i];
+    }
+  }
+
+  return min;
+}
+
+int getMaxDigit(int* a, int n)
+{
+  // 得到最大数, 并取到其的位数
+  int max = getMax(a, n);
   int max_digit = 1;
   while (max >= 10)
   {
@@ -584,9 +605,40 @@ int getDigitNum(int num, int base)
   while (base > 1)
   {
     num /= 10;
+    base--;
   }
 
-  return num%10;
+  return num % 10;
+}
+
+// 将数组所有元素变为非负数, 返回最小值
+int arrayToNonnegative(int*a, int n)
+{
+  int min = getMin(a, n);
+  int i = 0;
+  if (min < 0)
+  {
+    for (i = 0; i < n; i++)
+    {
+      a[i] -= min ; 
+    }
+  }
+  
+  return min;
+}
+
+//将数组恢复原来的状态
+void arrayToPreliminary(int* a, int n, int min)
+{
+  int i = 0;
+  
+  if (min < 0)
+  {
+    for (i = 0; i < n; i++)
+    {
+      a[i] += min;
+    }
+  }
 }
 
 void RadixSort(int* a, int n)
@@ -598,6 +650,8 @@ void RadixSort(int* a, int n)
   {
     QueueInit(&count[i]); 
   }
+
+  int min = arrayToNonnegative(a, n);
 
   int max_digit = getMaxDigit(a, n);
 
@@ -623,6 +677,8 @@ void RadixSort(int* a, int n)
     }
     base++;
   }
+  
+  arrayToPreliminary(a, n, min);
 
   // 释放数组空间
   for (i = 0; i < 10; i++)
