@@ -554,3 +554,97 @@ void CountSort(int* a, int n)
   
   free(tmp);
 }
+
+int getMaxDigit(int* a, int n)
+{
+
+  // 得到最大数, 并取到其的位数
+  int i = 0;
+  int max = a[0];
+  for (i = 1; i < n; i++)
+  {
+    if (a[i] > max)
+    {
+      max = a[i];
+    }
+  }
+  
+  int max_digit = 1;
+  while (max >= 10)
+  {
+    max_digit++;
+    max /= 10;
+  }
+  
+  return max_digit;
+}
+
+int getDigitNum(int num, int base)
+{
+  while (base > 1)
+  {
+    num /= 10;
+  }
+
+  return num%10;
+}
+
+void RadixSort(int* a, int n)
+{
+  // 创建长度为10的队列数组
+  Queue* count = (Queue*)malloc(sizeof(Queue) * 10);
+  int i = 0;
+  for (i = 0; i < 10; i++)
+  {
+    QueueInit(&count[i]); 
+  }
+
+  int max_digit = getMaxDigit(a, n);
+
+  // 1-个位 2-十位 3-百位
+  int base = 1;
+  // 从个位到最高位, 如果某数该位是i, 入i队列
+  while (base <= max_digit)
+  {
+    for (i = 0; i < n; i++)
+    {
+      int digit_num = getDigitNum(a[i], base);  //得到每个数在该位的数字 
+      QueuePush(&count[digit_num], a[i]);       //入对应下标序号的队列中
+    }
+    
+    int index = 0;
+    for (i = 0; i < 10; i++)
+    {//按升序将每个队列的元素重新放回数组中
+      while (!QueueEmpty(&count[i]))
+      {
+        a[index++] = QueueFront(&count[i]);
+        QueuePop(&count[i]);
+      }
+    }
+    base++;
+  }
+
+  // 释放数组空间
+  for (i = 0; i < 10; i++)
+  {
+    QueueDestroy(&count[i]);
+  }
+
+  free(count);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

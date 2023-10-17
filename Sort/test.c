@@ -58,6 +58,13 @@ void TestCount()
   PrintArray(a, sizeof(a)/sizeof(int));
 }
 
+void TestRadix()
+{
+  int a[] = {9,1,2,5,7,4,8,6,3,5,1,2,3,5,1,8,3};
+  RadixSort(a, sizeof(a)/sizeof(int));
+  PrintArray(a, sizeof(a)/sizeof(int));
+}
+
 void TestOP()
 {
   srand(time(0));
@@ -72,6 +79,8 @@ void TestOP()
   int* a8 = (int*)malloc(sizeof(int) * N);
   int* a9 = (int*)malloc(sizeof(int) * N);
   int* a10 = (int*)malloc(sizeof(int) * N);
+  int* a11 = (int*)malloc(sizeof(int) * N);
+  int* a12 = (int*)malloc(sizeof(int) * N);
 
   int i = 0;
   for (i = 0; i < N; i++)
@@ -86,6 +95,8 @@ void TestOP()
      a8[i] = a1[i];
      a9[i] = a1[i];
      a10[i] = a1[i];
+     a11[i] = a1[i];
+     a12[i] = a1[i];
   }  
    
   clock_t begin1 = clock();
@@ -128,6 +139,16 @@ void TestOP()
   QuickSortNorR(a10, 0, N-1);   
   clock_t end10 = clock();  
 
+  clock_t begin11 = clock();
+  CountSort(a11, N);
+  clock_t end11= clock();
+  
+  clock_t begin12 = clock();
+  RadixSort(a12, N);
+  clock_t end12 = clock();
+
+
+
   printf("InsertSort:%.3lf\n",(double)(end1 - begin1)/CLOCKS_PER_SEC);
   printf("ShellSort:%.3lf\n", (double)(end2 - begin2)/CLOCKS_PER_SEC);  
   printf("BubbleSort:%.3lf\n", (double)(end3 - begin3)/CLOCKS_PER_SEC);  
@@ -138,6 +159,8 @@ void TestOP()
   printf("QuickSort(hole):%.3lf\n", (double)(end8 - begin8)/CLOCKS_PER_SEC);  
   printf("QuickSort(two_point):%.3lf\n", (double)(end9 - begin9)/CLOCKS_PER_SEC);  
   printf("QuickSortNorR:%.3lf\n", (double)(end10 - begin10)/CLOCKS_PER_SEC);  
+  printf("CountSort:%.3lf\n", (double)(end11 - begin11)/CLOCKS_PER_SEC);  
+  printf("RadixSort:%.3lf\n", (double)(end12 - begin12)/CLOCKS_PER_SEC);  
 
   free(a1);
   free(a2);
@@ -149,7 +172,8 @@ void TestOP()
   free(a8);
   free(a9);
   free(a10);
-
+  free(a11);
+  free(a12);
 }
 
 
@@ -161,9 +185,10 @@ int main(void)
   //TestHeap();
   //TestSelect();
   //TestQuick();
-  TestMerge();
-  TestCount();
-  //TestOP();
+  //TestMerge();
+  //TestCount();
+  //TestRadix();
+  TestOP();
 
   return 0;
 }
