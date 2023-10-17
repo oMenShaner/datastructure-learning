@@ -405,3 +405,302 @@ void QuickSortNorR(int*a, int left, int right)
   }
   StackDestroy(&stack);
 }
+
+void Merge(int* a, int* tmp, int left, int mid, int right)
+{
+  int cur1 = left;  //数组1首元素下标
+  int cur2 = mid + 1;   //数组2首元素下表
+  int index = left; //tmp数组首元素下标
+
+  while (cur1 <= mid && cur2 <= right)
+  {//去两数组最小值尾插至tmp数组
+    if (a[cur1] < a[cur2])
+    {
+      tmp[index++] = a[cur1++];   
+    }
+    else 
+    {
+      tmp[index++] = a[cur2++];
+    }
+  }
+
+  while (cur1 <= mid)
+  {//如果数组1没有遍历完
+    tmp[index++] = a[cur1++];
+  }
+
+  while (cur2 <= right)
+  {//如果数组2没有遍历完
+    tmp[index++] = a[cur2++];
+  }
+
+  //拷贝tmp数组至a数组
+  memcpy(a+left, tmp+left, sizeof(int) * (right - left + 1)); 
+}
+
+void _MergeSort(int* a, int* tmp, int left, int right)
+{
+  if (right <= left)
+    return;
+
+  int mid = (left + right) / 2;
+  _MergeSort(a, tmp, left, mid); 
+  _MergeSort(a, tmp, mid+1, right);
+
+  //归并
+  Merge(a, tmp, left, mid, right);
+}
+
+void MergeSort(int* a, int n)
+{
+  // 先开辟一个tmp数组空间
+  int* tmp = (int*)malloc(sizeof(int) * n);
+  
+  if (tmp == NULL)
+  {
+    perror("malloc");
+  }
+
+  int left = 0;
+  int right = n-1;
+  _MergeSort(a, tmp, left, right); //[left, right]
+
+  free(tmp);
+}
+
+void MergeSortNorR(int* a, int n)
+{
+  int* tmp = (int*)malloc(sizeof(int) * n);
+  if (tmp == NULL)
+  {
+    perror("malloc fail");
+  }
+
+  // 11归并->22归并->...
+  int gap = 1;
+  int i = 0;
+  
+  while (gap < n)
+  {
+    for (i = 0; i < n; i += 2*gap)
+    {
+      int mid = i + gap - 1;
+      int left = i;
+      int right = i + 2*gap - 1;
+      
+      if (mid+1 >= n)
+      {//如果右子序列的左下标越界，直接返回
+        break;
+      }
+
+      if (right >= n)
+      {//如果右子序列的右下标越界，修改下标
+        right = n-1;
+      }
+      Merge(a, tmp, left, mid, right);
+    }
+    gap *= 2;
+  }
+
+  free(tmp);
+}
+
+void CountSort(int* a, int n)
+{
+  int min = a[0];
+  int max = a[0];
+  int i = 0;
+  
+  // 得到序列的最大最小值
+  for (i = 1; i < n; i++)
+  {
+    if (a[i] < min)
+    {
+      min = a[i];
+    }
+
+    if (a[i] > max)
+    {
+      max = a[i];
+    }
+  }
+
+  // 得到序列的范围
+  int range = max - min + 1;
+  printf("range:%d\n", range);
+
+  int* tmp = (int*)calloc(range, sizeof(int));
+  if (tmp == NULL)
+  {
+    perror("malloc fail");
+  }
+
+  // 统计各数
+  for (i = 0; i < n; i++)
+  {
+    tmp[a[i] - min]++;
+  }
+
+  // 从小到大重新copy到原数组
+  int index = 0;
+  for (i = 0; i < range; i++)
+  {
+    while (tmp[i])
+    {
+      a[index++] = i + min;
+      tmp[i]--;
+    }
+  }
+  
+  free(tmp);
+}
+
+int getMax(int* a, int n)
+{
+  int i = 0;
+  int max = a[0];
+  for (i = 1; i < n; i++)
+  {
+    if (a[i] > max)
+    {
+      max = a[i];
+    }
+  }
+
+  return max;
+}
+
+int getMin(int* a, int n)
+{
+  int i = 0; 
+  int min = a[0];
+
+  for (i = 1; i < n; i++)
+  {
+    if (a[i] < min)
+    {
+      min = a[i];
+    }
+  }
+
+  return min;
+}
+
+int getMaxDigit(int* a, int n)
+{
+  // 得到最大数, 并取到其的位数
+  int max = getMax(a, n);
+  int max_digit = 1;
+  while (max >= 10)
+  {
+    max_digit++;
+    max /= 10;
+  }
+  
+  return max_digit;
+}
+
+int getDigitNum(int num, int base)
+{
+  while (base > 1)
+  {
+    num /= 10;
+    base--;
+  }
+
+  return num % 10;
+}
+
+// 将数组所有元素变为非负数, 返回最小值
+int arrayToNonnegative(int*a, int n)
+{
+  int min = getMin(a, n);
+  int i = 0;
+  if (min < 0)
+  {
+    for (i = 0; i < n; i++)
+    {
+      a[i] -= min ; 
+    }
+  }
+  
+  return min;
+}
+
+//将数组恢复原来的状态
+void arrayToPreliminary(int* a, int n, int min)
+{
+  int i = 0;
+  
+  if (min < 0)
+  {
+    for (i = 0; i < n; i++)
+    {
+      a[i] += min;
+    }
+  }
+}
+
+void RadixSort(int* a, int n)
+{
+  // 创建长度为10的队列数组
+  Queue* count = (Queue*)malloc(sizeof(Queue) * 10);
+  int i = 0;
+  for (i = 0; i < 10; i++)
+  {
+    QueueInit(&count[i]); 
+  }
+
+  int min = arrayToNonnegative(a, n);
+
+  int max_digit = getMaxDigit(a, n);
+
+  // 1-个位 2-十位 3-百位
+  int base = 1;
+  // 从个位到最高位, 如果某数该位是i, 入i队列
+  while (base <= max_digit)
+  {
+    for (i = 0; i < n; i++)
+    {
+      int digit_num = getDigitNum(a[i], base);  //得到每个数在该位的数字 
+      QueuePush(&count[digit_num], a[i]);       //入对应下标序号的队列中
+    }
+    
+    int index = 0;
+    for (i = 0; i < 10; i++)
+    {//按升序将每个队列的元素重新放回数组中
+      while (!QueueEmpty(&count[i]))
+      {
+        a[index++] = QueueFront(&count[i]);
+        QueuePop(&count[i]);
+      }
+    }
+    base++;
+  }
+  
+  arrayToPreliminary(a, n, min);
+
+  // 释放数组空间
+  for (i = 0; i < 10; i++)
+  {
+    QueueDestroy(&count[i]);
+  }
+
+  free(count);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
