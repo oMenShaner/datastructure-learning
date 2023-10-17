@@ -5,6 +5,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include "Stack.h"
+#include <string.h>
 
 void PrintArray(int* a, int n);
 
@@ -17,3 +18,5 @@ void QuickSort1(int* a, int left, int right);
 void QuickSort2(int* a, int left, int right);
 void QuickSort3(int* a, int left, int right);
 void QuickSortNorR(int* a, int left, int right);
+void MergeSort(int* a, int n);
+void MergeSortNorR(int* a, int n);

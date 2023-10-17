@@ -44,6 +44,13 @@ void TestQuick()
   PrintArray(a, sizeof(a)/sizeof(int));
 }
 
+void TestMerge()
+{
+  int a[] = {9,1,2,5,7,4,8,6,3,5,1,2,3,5,1,8,3};
+  MergeSortNorR(a, sizeof(a)/sizeof(int));
+  PrintArray(a, sizeof(a)/sizeof(int));
+}
+
 void TestOP()
 {
   srand(time(0));
@@ -62,7 +69,7 @@ void TestOP()
   int i = 0;
   for (i = 0; i < N; i++)
   {
-     a1[i] = rand() + i;
+     a1[i] = rand();
      a2[i] = a1[i];
      a3[i] = a1[i];
      a4[i] = a1[i];
@@ -99,7 +106,7 @@ void TestOP()
   clock_t end6 = clock();  
 
   clock_t begin7 = clock();
-  //MergeSort(a7, N);   
+  MergeSort(a7, N);   
   clock_t end7 = clock();  
 
   clock_t begin8 = clock();
@@ -146,8 +153,9 @@ int main(void)
   //TestBubble();
   //TestHeap();
   //TestSelect();
-  TestOP();
   //TestQuick();
+  //TestMerge();
+  TestOP();
 
   return 0;
 }

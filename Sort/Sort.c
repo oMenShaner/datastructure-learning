@@ -405,3 +405,102 @@ void QuickSortNorR(int*a, int left, int right)
   }
   StackDestroy(&stack);
 }
+
+void Merge(int* a, int* tmp, int left, int mid, int right)
+{
+  int cur1 = left;  //数组1首元素下标
+  int cur2 = mid + 1;   //数组2首元素下表
+  int index = left; //tmp数组首元素下标
+
+  while (cur1 <= mid && cur2 <= right)
+  {//去两数组最小值尾插至tmp数组
+    if (a[cur1] < a[cur2])
+    {
+      tmp[index++] = a[cur1++];   
+    }
+    else 
+    {
+      tmp[index++] = a[cur2++];
+    }
+  }
+
+  while (cur1 <= mid)
+  {//如果数组1没有遍历完
+    tmp[index++] = a[cur1++];
+  }
+
+  while (cur2 <= right)
+  {//如果数组2没有遍历完
+    tmp[index++] = a[cur2++];
+  }
+
+  //拷贝tmp数组至a数组
+  memcpy(a+left, tmp+left, sizeof(int) * (right - left + 1)); 
+}
+
+void _MergeSort(int* a, int* tmp, int left, int right)
+{
+  if (right <= left)
+    return;
+
+  int mid = (left + right) / 2;
+  _MergeSort(a, tmp, left, mid); 
+  _MergeSort(a, tmp, mid+1, right);
+
+  //归并
+  Merge(a, tmp, left, mid, right);
+}
+
+void MergeSort(int* a, int n)
+{
+  // 先开辟一个tmp数组空间
+  int* tmp = (int*)malloc(sizeof(int) * n);
+  
+  if (tmp == NULL)
+  {
+    perror("malloc");
+  }
+
+  int left = 0;
+  int right = n-1;
+  _MergeSort(a, tmp, left, right); //[left, right]
+
+  free(tmp);
+}
+
+void MergeSortNorR(int* a, int n)
+{
+  int* tmp = (int*)malloc(sizeof(int) * n);
+  if (tmp == NULL)
+  {
+    perror("malloc fail");
+  }
+
+  // 11归并->22归并->...
+  int gap = 1;
+  int i = 0;
+  
+  while (gap < n)
+  {
+    for (i = 0; i < n; i += 2*gap)
+    {
+      int mid = i + gap - 1;
+      int left = i;
+      int right = i + 2*gap - 1;
+      
+      if (mid+1 >= n)
+      {//如果右子序列的左下标越界，直接返回
+        break;
+      }
+
+      if (right >= n)
+      {//如果右子序列的右下标越界，修改下标
+        right = n-1;
+      }
+      Merge(a, tmp, left, mid, right);
+    }
+    gap *= 2;
+  }
+
+  free(tmp);
+}
